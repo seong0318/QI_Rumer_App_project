@@ -77,6 +77,7 @@
                 </EditText>
 
                 <Button
+                    android:id="@+id/checkid_btn"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:layout_gravity="bottom"
@@ -85,7 +86,7 @@
                     android:background="@drawable/white_something"
                     android:text="Check ID"
                     android:textColor="#FFFFFF"
-                    android:id="@+id/checkid_btn">
+                    android:enabled="true">
 
                 </Button>
 
