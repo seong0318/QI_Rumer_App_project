@@ -77,7 +77,7 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
                 startActivity(intent);
                 return;
             }
-            case R.id.signup_txt: {
+            case R.id.signup_txt:{
                 Intent intent = new Intent(SigninActivity.this, SignupActivity.class);
                 startActivity(intent);
                 return;
@@ -146,7 +146,7 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
         dialog.show();
     }
 
-    public void onBackPressed() {
+    public void onBackPressed(){
 
 
         //int i=90;

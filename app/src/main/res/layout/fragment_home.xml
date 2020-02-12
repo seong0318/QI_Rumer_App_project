@@ -136,23 +136,38 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFFFFF"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp">
 
-            
             <fragment
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:id="@+id/map"
-                android:name="com.google.android.gms.maps.SupportMapFragment" />
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:id="@+id/currentlocation_btn"
+                android:foreground="@drawable/target25"
+                android:onClick="onLastLocationButtonClicked"
+                android:padding="12dp"
+                android:clickable="true"
+                android:layout_width="40dp"
+                android:layout_marginBottom="30dp"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/location_btn"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                />
 
 
-        </LinearLayout>
+
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>
