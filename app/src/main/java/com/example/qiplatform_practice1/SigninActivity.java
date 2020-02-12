@@ -50,9 +50,9 @@ class SigninRetrofit {
 }
 
 public class SigninActivity extends AppCompatActivity implements Button.OnClickListener {
-    Activity activity = null;
-    EditText usn_edttxt, pwd_edttxt;
-    Button signin_btn;
+    private Activity activity = null;
+    private EditText usn_edttxt, pwd_edttxt;
+    private Button signin_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

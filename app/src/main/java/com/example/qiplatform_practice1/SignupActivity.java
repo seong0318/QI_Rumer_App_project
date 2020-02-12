@@ -81,7 +81,7 @@ class SignupRetrofit {
 }
 
 public class SignupActivity extends AppCompatActivity implements Button.OnClickListener {
-    Activity activity = null;
+    private Activity activity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
