@@ -160,7 +160,8 @@
                 android:singleLine="true"
                 android:text="Sign up"
                 android:textColor="#FFFFFF"
-                android:textSize="15dp"></Button>
+                android:textSize="15dp"
+                android:enabled="false"></Button>
 
         </LinearLayout>
 

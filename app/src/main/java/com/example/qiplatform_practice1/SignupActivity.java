@@ -1,21 +1,20 @@
 package com.example.qiplatform_practice1;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.qiplatform_practice1.Url;
-import com.example.qiplatform_practice1.URLConnector;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -35,28 +34,17 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-class Result {
-    private int result;
 
-    public Result(int result) {
-        this.result = result;
-    }
-
-    public int getResult() {
-        return result;
-    }
-}
-
-interface RetrofitExService {
-    @GET("/usernamecheck/1")
+interface UsernameCheckGet {
+    @GET("/usernamecheck")
     Call<Result> getData(@Query("user_name") String username);
 }
 
-class RetrofitClient {
+class UsernameCheckRetrofit {
     private static final String baseUrl = new Url().getUrl();
 
-    public static RetrofitExService getApiService() {
-        return getInstance().create(RetrofitExService.class);
+    public static UsernameCheckGet getApiService() {
+        return getInstance().create(UsernameCheckGet.class);
     }
 
     private static Retrofit getInstance() {
@@ -69,17 +57,17 @@ class RetrofitClient {
     }
 }
 
-interface RetrofitPost {
+interface SignupPost {
     @FormUrlEncoded
-    @POST("/signuphandle/1")
+    @POST("/signuphandle")
     Call<Result> postData(@FieldMap HashMap<String, Object> param);
 }
 
-class RetrofitSignup {
+class SignupRetrofit {
     private static final String baseUrl = new Url().getUrl();
 
-    public static RetrofitPost getApiService() {
-        return getInstance().create(RetrofitPost.class);
+    public static SignupPost getApiService() {
+        return getInstance().create(SignupPost.class);
     }
 
     private static Retrofit getInstance() {
@@ -93,21 +81,41 @@ class RetrofitSignup {
 }
 
 public class SignupActivity extends AppCompatActivity implements Button.OnClickListener {
-    private Url url = new Url();
-
-    public String getUrl() {
-        return url.getUrl();
-    }
+    Activity activity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        activity = this;
 
         Button checkIdBtn = (Button) findViewById(R.id.checkid_btn);
         checkIdBtn.setOnClickListener((View.OnClickListener) this);
-        Button signupBtn = (Button) findViewById(R.id.signup_btn);
+        final Button signupBtn = (Button) findViewById(R.id.signup_btn);
         signupBtn.setOnClickListener((View.OnClickListener) this);
+
+        final EditText pwdText = (EditText) findViewById(R.id.pwd_edttxt);
+        final EditText pwdConfirmText = (EditText) findViewById(R.id.pwd_confirm_edttxt);
+
+        pwdConfirmText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (pwdText.getText().toString().equals(pwdConfirmText.getText().toString()))
+                    signupBtn.setEnabled(true);
+                else
+                    signupBtn.setEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     @Override
@@ -115,8 +123,7 @@ public class SignupActivity extends AppCompatActivity implements Button.OnClickL
         final TextView usernameText = (TextView) findViewById(R.id.usn_edttxt);
         TextView emailText = (TextView) findViewById(R.id.email_edttxt);
         TextView pwdText = (TextView) findViewById(R.id.pwd_edttxt);
-        TextView pwdConfirmText = (TextView) findViewById(R.id.pwd_confirm_edttxt);
-        String username, email, pwd, pwd_confirm;
+        String username, email, pwd;
         Call<Result> getResult;
         HashMap<String, Object> formData;
         Gson g = new Gson();
@@ -124,7 +131,7 @@ public class SignupActivity extends AppCompatActivity implements Button.OnClickL
         switch (view.getId()) {
             case R.id.checkid_btn:
                 username = usernameText.getText().toString();
-                getResult = RetrofitClient.getApiService().getData(username);
+                getResult = UsernameCheckRetrofit.getApiService().getData(username);
                 getResult.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
@@ -155,30 +162,41 @@ public class SignupActivity extends AppCompatActivity implements Button.OnClickL
                 username = usernameText.getText().toString();
                 email = emailText.getText().toString();
                 pwd = pwdText.getText().toString();
-                pwd_confirm = pwdConfirmText.getText().toString();
+
+                if (findViewById(R.id.checkid_btn).isEnabled()) {
+                    showMessage("Notice", "Please check id duplication first");
+                    return;
+                }
 
                 formData = new HashMap();
                 formData.put("user_name", username);
                 formData.put("email", email);
                 formData.put("pwd", pwd);
 
-                getResult = RetrofitSignup.getApiService().postData(formData);
+                getResult = SignupRetrofit.getApiService().postData(formData);
                 getResult.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
                         if (response.isSuccessful()) {
                             int execResult = response.body().getResult();
 //
-                            if (execResult == 0)
-                                showMessage("Successful Registration", "Please complete the account verification in the email provided.");
-                            else if (execResult == -1)
-                                showMessage("ERROR", "Store user Query error");
-                            else if (execResult == -2)
-                                showMessage("ERROR", "Store temp_user Query error");
-                            else if (execResult == -4)
-                                showMessage("ERROR", "Send mail error");
-                            else
-                                showMessage("ERROR", "Invalid access " + execResult);
+                            switch (execResult) {
+                                case 0:
+                                    showSuccessMessage("Successful Registration", "Please complete the account verification in the email provided.");
+                                    break;
+                                case -1:
+                                    showMessage("ERROR", "Store user Query error");
+                                    break;
+                                case -2:
+                                    showMessage("ERROR", "Store temp_user Query error");
+                                    break;
+                                case -4:
+                                    showMessage("ERROR", "Send mail error");
+                                    break;
+                                default:
+                                    showMessage("ERROR", "Invalid access " + execResult);
+                                    break;
+                            }
                         }
                     }
 
@@ -199,6 +217,22 @@ public class SignupActivity extends AppCompatActivity implements Button.OnClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void showSuccessMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(activity, SigninActivity.class);
+                activity.startActivity(intent);
             }
         });
 
