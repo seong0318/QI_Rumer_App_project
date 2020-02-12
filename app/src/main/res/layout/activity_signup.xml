@@ -74,15 +74,16 @@
 
                 </EditText>
                 <Button
+                    android:id="@+id/checkid_btn"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:text="Check ID"
                     android:textColor="#FFFFFF"
+                    android:enabled="true">
                     android:layout_weight="3"
                     android:layout_gravity="bottom"
                     android:layout_marginBottom="3dp"
                     android:background="@drawable/white_something">
-
                 </Button>
 
 
@@ -95,6 +96,7 @@
                 android:orientation="horizontal"
                 android:weightSum="10">
                 <EditText
+                    android:id="@+id/email_edttxt"
                     android:layout_width="0sp"
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
@@ -111,6 +113,7 @@
 
             </LinearLayout>
             <EditText
+                android:id="@+id/pwd_edttxt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
@@ -125,6 +128,7 @@
 
             </EditText>
             <EditText
+                android:id="@+id/pwd_confirm_edttxt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
@@ -150,7 +154,9 @@
                 android:id="@+id/signup_btn"
                 android:gravity="center"
                 android:text="Sign up"
-                android:textColor="#FFFFFF"></Button>
+                android:textColor="#FFFFFF"
+                android:textSize="15dp"
+                android:enabled="false"></Button>
 
         </LinearLayout>
 
