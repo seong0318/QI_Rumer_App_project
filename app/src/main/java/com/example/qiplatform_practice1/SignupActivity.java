@@ -21,6 +21,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        int a = 0;
         activity=this;
         Signinhere = findViewById(R.id.gosignin_txt);
         usn_edttxt = findViewById(R.id.usn_edttxt);
