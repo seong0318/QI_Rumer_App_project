@@ -9,9 +9,10 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+
 public class SigninActivity extends AppCompatActivity {
 
-    EditText usn_edttxt, pwd_edttxt;
+    EditText    usn_edttxt, pwd_edttxt;
     Button signin_btn;
 
 
@@ -25,26 +26,29 @@ public class SigninActivity extends AppCompatActivity {
         signin_btn = findViewById(R.id.signin_btn);
 
 
+
+
+
+
     }
 
 
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.forgotpwd_txt: {
+        switch(view.getId()){
+            case R.id.forgotpwd_txt:{
                 Intent intent = new Intent(SigninActivity.this, ForgotpwActivity.class);
                 startActivity(intent);
                 return;
             }
-            case R.id.signup_txt: {
+            case R.id.signup_txt:{
                 Intent intent = new Intent(SigninActivity.this, SignupActivity.class);
                 startActivity(intent);
                 return;
             }
 
-            case R.id.signin_btn: {
+            case R.id.signin_btn:{
 
-            }
-            String username = usn_edttxt.getText().toString();
+            }String username = usn_edttxt.getText().toString();
             String password = pwd_edttxt.getText().toString();
 
             Intent intent = new Intent(SigninActivity.this, PopupActivity.class);
@@ -56,7 +60,7 @@ public class SigninActivity extends AppCompatActivity {
 
     }
 
-    public void onBackPressed() {
+    public void onBackPressed(){
 
 
         //int i=90;

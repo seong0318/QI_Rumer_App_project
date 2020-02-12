@@ -22,7 +22,7 @@
         <item name="colorControlNormal">#C6C6C6</item>
     </style>
 
-    <style name="Transparent" parent="@style/Theme.AppCompat">
+    <style name="Transparent" parent="@style/AppTheme.NoActionBar">
         <!--Titlebar 없애는 옵션
         true : Titlebar x
         false : Titlebar o
