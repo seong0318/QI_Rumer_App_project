@@ -1,5 +1,6 @@
 package com.example.qiplatform_practice1;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +34,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -44,9 +47,38 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+
+interface SignoutGet {
+    @GET("/signout")
+    Call<Result> getData();
+}
+
+class SignoutRetrofit {
+    private static final String baseUrl = new Url().getUrl();
+
+    public static SignoutGet getApiService() {
+        return getInstance().create(SignoutGet.class);
+    }
+
+    private static Retrofit getInstance() {
+        Gson gson = new GsonBuilder().setLenient().create();
+
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+    }
+}
 
 public class MainActivity extends AppCompatActivity {
-
+    private Activity activity = null;
     ImageView menu;
     DrawerLayout drawer;
     NavigationView nav;
@@ -66,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        activity = this;
 
         this.InitializeLayout();
 
@@ -91,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-     //   getSupportActionBar().setHomeAsUpIndicator(R.drawable.logo);
+        //   getSupportActionBar().setHomeAsUpIndicator(R.drawable.logo);
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -115,38 +147,48 @@ public class MainActivity extends AppCompatActivity {
 //                        break;
 
                     case R.id.nav_sign_out: // 로그아웃 버튼을 누른 경우
-//                        json = new JSONObject();
-//                        try {
-//                            json.put("USN", Values.USN);
-//                            Log.d("usn_log", json.toString());
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                        try {
-//                            result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/app/signout", json.toString()).get();
-//                        } catch (ExecutionException e) {
-//                            e.printStackTrace();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                        try {
-//                            JSONObject json_data = new JSONObject(result);
-//                            Log.d("asdf5", "receive json: " + json_data.toString());
-//                            result_code = (json_data.optString("result_code"));
-//                            Log.d("asdf6", "result_code: " + result_code);
-//
-//                        } catch (Exception e) {
-//                            Log.e("Fail 3", e.toString());
-//                        }
-//                        if(result_code.equals("0")){
-//                            Toast.makeText(MainActivity.this, "Sign out complete", Toast.LENGTH_SHORT).show();
-//                            main = new Intent(getApplicationContext(), MainActivity.class);
-//                            startActivity(main);
-//                        }
-//                        else if(result_code.equals("1")){
-//                            Toast.makeText(MainActivity.this, "Sign out Error", Toast.LENGTH_SHORT).show();
-//                        }
-//                        break;
+//                        showSuccessMessage("NOTICE", "Do you really want to sign out?");
+                        Call<Result> getResult = SignoutRetrofit.getApiService().getData();
+                        getResult.enqueue(new Callback<Result>() {
+                            @Override
+                            public void onResponse(Call<Result> call, Response<Result> response) {
+                                if (response.isSuccessful()) {
+                                    int execResult = response.body().getResult();
+                                    Intent intent;
+
+                                    //showMessage("test", response.body().toString());
+
+                                    switch (execResult) {
+                                        case 0:
+                                            showMessage("NOTICE", "Success sign out");
+                                            intent = new Intent(activity, MainActivity.class);
+                                            activity.startActivity(intent);
+                                            break;
+                                        case -1:
+                                            showMessage("ERROR", "Query error");
+                                            break;
+                                        case -2:
+                                            showMessage("NOTICE", "This account is already signed out");
+                                            break;
+                                        case -3:
+                                            showMessage("ERROR", "Update query error");
+                                            break;
+                                        case -4:
+                                            showFailMessage("NOTICE", "Please sign in first");
+                                            break;
+                                        default:
+                                            showMessage("ERROR", "Invalid access: " + execResult);
+                                            break;
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Result> call, Throwable t) {
+                                Log.e("ERROR", "username duplicate check retrofit error" + t.getMessage());
+                            }
+                        });
+                        break;
 
                     case R.id.nav_sensor_regi: // Sensor Registration 메뉴를 누른 경우
                         if (Values.bluetooth_status.equals("1")) { // 센서가 어플리케이션에 연결되어 있는 경우
@@ -248,6 +290,37 @@ public class MainActivity extends AppCompatActivity {
 //        return;
 
         });
+    }
+
+    public void showFailMessage(String title, String message) {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(activity, SigninActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void showMessage(String title, String message) {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
 

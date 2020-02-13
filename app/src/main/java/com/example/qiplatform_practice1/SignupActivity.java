@@ -210,7 +210,6 @@ public class SignupActivity extends AppCompatActivity implements Button.OnClickL
         }
     }
 
-
     public void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title);
