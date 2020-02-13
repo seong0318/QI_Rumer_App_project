@@ -149,63 +149,63 @@ public class MainActivity extends AppCompatActivity {
 //                        break;
 
                     case R.id.nav_sensor_regi: // Sensor Registration 메뉴를 누른 경우
-                        if (Values.bluetooth_status.equals("1")) { // 센서가 어플리케이션에 연결되어 있는 경우
-                            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() { // dialog 창을 띄움
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    switch (which) {
-                                        case DialogInterface.BUTTON_POSITIVE: // Dialog 에서 yes 버튼을 누른 경우
-                                            JSONObject jsonObject = new JSONObject();
-                                            try {
-                                                jsonObject.put("USN", Values.USN);
-                                                jsonObject.put("DEVICE", Values.DEVICE);
-                                                jsonObject.put("MAC_ADD", Values.MAC);
-                                                Log.d("asdf1", jsonObject.toString());
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                            if (Values.USN.length() > 0) {
-                                                try {
-                                                    Log.d("asdf2", jsonObject.toString());
-                                                    result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/sensor/app/registration", jsonObject.toString()).get();
-                                                    Log.d("asdf3", result);
-                                                } catch (ExecutionException e) {
-                                                    e.printStackTrace();
-                                                } catch (Exception e) {
-                                                    Log.d("asdf411", e.toString());
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                            try {
-                                                JSONObject json_data = new JSONObject(result);
-                                                Log.d("asdf5", "receive json: " + json_data.toString());
-                                                result_code = (json_data.optString("result_code"));
-                                                Values.SSN = (json_data.optString("SSN"));
-                                                Log.d("asdf6", "result_code: " + result_code);
-                                                Log.d("asdf7", "SSN: " + Values.SSN);
-
-                                            } catch (Exception e) {
-                                                Log.e("Fail 3", e.toString());
-                                            }
-                                            if (result_code.equals("0")) {
-                                                Toast.makeText(MainActivity.this, "Registration complete", Toast.LENGTH_SHORT).show();
-                                            } else if (result_code.equals("1")) {
-                                                Toast.makeText(MainActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
-                                            }
-                                            break;
-                                        case DialogInterface.BUTTON_NEGATIVE: // dialog 창에서 no 버튼을 누른 경우
-                                            Toast.makeText(MainActivity.this, "Cancel", Toast.LENGTH_LONG).show();
-                                            break;
-                                    }
-                                }
-                            };
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setMessage("Add " + Values.DEVICE + " to sensor list").setPositiveButton("Yes", dialogClickListener)
-                                    .setNegativeButton("No", dialogClickListener).show();
-                        } else if (Values.bluetooth_status.equals("2")) { // 센서와 연결되지있지 않은 경우
-                            Toast.makeText(MainActivity.this, "Connect device first", Toast.LENGTH_LONG).show();
-                        }
-                        break;
+//                        if (Values.bluetooth_status.equals("1")) { // 센서가 어플리케이션에 연결되어 있는 경우
+//                            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() { // dialog 창을 띄움
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    switch (which) {
+//                                        case DialogInterface.BUTTON_POSITIVE: // Dialog 에서 yes 버튼을 누른 경우
+//                                            JSONObject jsonObject = new JSONObject();
+//                                            try {
+//                                                jsonObject.put("USN", Values.USN);
+//                                                jsonObject.put("DEVICE", Values.DEVICE);
+//                                                jsonObject.put("MAC_ADD", Values.MAC);
+//                                                Log.d("asdf1", jsonObject.toString());
+//                                            } catch (JSONException e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                            if (Values.USN.length() > 0) {
+//                                                try {
+//                                                    Log.d("asdf2", jsonObject.toString());
+//                                                    result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/sensor/app/registration", jsonObject.toString()).get();
+//                                                    Log.d("asdf3", result);
+//                                                } catch (ExecutionException e) {
+//                                                    e.printStackTrace();
+//                                                } catch (Exception e) {
+//                                                    Log.d("asdf411", e.toString());
+//                                                    e.printStackTrace();
+//                                                }
+//                                            }
+//                                            try {
+//                                                JSONObject json_data = new JSONObject(result);
+//                                                Log.d("asdf5", "receive json: " + json_data.toString());
+//                                                result_code = (json_data.optString("result_code"));
+//                                                Values.SSN = (json_data.optString("SSN"));
+//                                                Log.d("asdf6", "result_code: " + result_code);
+//                                                Log.d("asdf7", "SSN: " + Values.SSN);
+//
+//                                            } catch (Exception e) {
+//                                                Log.e("Fail 3", e.toString());
+//                                            }
+//                                            if (result_code.equals("0")) {
+//                                                Toast.makeText(MainActivity.this, "Registration complete", Toast.LENGTH_SHORT).show();
+//                                            } else if (result_code.equals("1")) {
+//                                                Toast.makeText(MainActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                            break;
+//                                        case DialogInterface.BUTTON_NEGATIVE: // dialog 창에서 no 버튼을 누른 경우
+//                                            Toast.makeText(MainActivity.this, "Cancel", Toast.LENGTH_LONG).show();
+//                                            break;
+//                                    }
+//                                }
+//                            };
+//                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//                            builder.setMessage("Add " + Values.DEVICE + " to sensor list").setPositiveButton("Yes", dialogClickListener)
+//                                    .setNegativeButton("No", dialogClickListener).show();
+//                        } else if (Values.bluetooth_status.equals("2")) { // 센서와 연결되지있지 않은 경우
+//                            Toast.makeText(MainActivity.this, "Connect device first", Toast.LENGTH_LONG).show();
+//                        }
+//                        break;
 
 //                    case R.id.nav_sensor_list: // Sensor List View 버튼을 누른 경우
 //                        listVIew = new Intent(getApplicationContext(), DeviceListView.class);
@@ -248,7 +248,18 @@ public class MainActivity extends AppCompatActivity {
 //        return;
 
         });
+
+
+
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
+
+
 
 
