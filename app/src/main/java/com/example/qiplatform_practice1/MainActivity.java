@@ -109,10 +109,10 @@ public class MainActivity extends AppCompatActivity {
 ////                        startActivity(doginfo);
 //                        break;
 
-//                    case R.id.nav_pw_change: // 비밀번호 변경 버튼을 누른 경우
-//                        pwchange = new Intent(getApplicationContext(), PwChange.class);
-//                        startActivity(pwchange);
-//                        break;
+                    case R.id.nav_user_management: // 비밀번호 변경 버튼을 누른 경우
+                        pwchange = new Intent(getApplicationContext(), Usermanagement.class);
+                        startActivity(pwchange);
+                        break;
 
                     case R.id.nav_sign_out: // 로그아웃 버튼을 누른 경우
 //                        json = new JSONObject();
