@@ -128,7 +128,6 @@ public class SignupActivity extends AppCompatActivity implements Button.OnClickL
         String username, email, pwd;
         Call<Result> getResult;
         HashMap<String, Object> formData;
-        Gson g = new Gson();
 
         switch (view.getId()) {
             case R.id.checkid_btn:
@@ -209,8 +208,8 @@ public class SignupActivity extends AppCompatActivity implements Button.OnClickL
                 });
                 break;
         }
-        });
     }
+
 
     public void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
