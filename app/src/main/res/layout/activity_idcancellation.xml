@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="78"
+            android:layout_weight="97"
             android:weightSum="4"
             android:orientation="vertical">
 
@@ -95,6 +95,7 @@
                 android:textColor="#FFFFFF"
                 android:textColorHint="#e6e6e6"
                 android:textSize="18dp"
+                android:inputType="textPassword"
                 android:theme="@style/EditTheme">
 
             </EditText>

@@ -69,6 +69,7 @@
                         android:src="@drawable/pwchange"
                         android:layout_weight="5"
                         android:clickable="true"
+                        android:onClick="onClick"
                         android:id="@+id/changepw_btn1">
                     </ImageView>
                     <TextView
@@ -91,6 +92,7 @@
                         android:src="@drawable/id_cancellation"
                         android:layout_marginTop="5dp"
                         android:layout_weight="5"
+                        android:onClick="onClick"
                         android:clickable="true"
                         android:id="@+id/idcancellation_btn1">
                     </ImageView>

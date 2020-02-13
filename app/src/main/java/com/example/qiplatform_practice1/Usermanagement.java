@@ -16,19 +16,18 @@ ImageView changepw_btn1, idcancellation_btn1;
 
 
 
-        changepw_btn1       = findViewById(R.id.changepw_btn1);
-        idcancellation_btn1 = findViewById(R.id.idcancellation_btn1);
+
     }
 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.changepw_btn1: {
-                Intent intent = new Intent(this, ChangepwActivity.class);
+                Intent intent = new Intent(Usermanagement.this, ChangepwActivity.class);
                 startActivity(intent);
                 return; }
 
             case R.id.idcancellation_btn1: {
-                Intent intent = new Intent(this, Idcancellation.class);
+                Intent intent = new Intent(Usermanagement.this, Idcancellation.class);
                 startActivity(intent);
                 return; }
 
