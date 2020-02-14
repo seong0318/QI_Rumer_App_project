@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -64,6 +63,7 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
         usn_edttxt = findViewById(R.id.usn_edttxt);
         pwd_edttxt = findViewById(R.id.pwd_edttxt);
         signin_btn = findViewById(R.id.signin_btn);
+
     }
 
     public void onClick(View view) {
@@ -161,8 +161,6 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
     }
 
     public void onBackPressed() {
-
-
         //int i=90;
         finish();
     }

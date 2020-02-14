@@ -1,0 +1,148 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/tonedown"
+    android:orientation="horizontal"
+    android:weightSum="100">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="10">
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="80"
+        android:orientation="vertical"
+        android:weightSum="100">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="78"
+            android:orientation="vertical"
+            android:weightSum="4">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.3" />
+
+
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/logo">
+
+            </ImageView>
+
+
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+
+        <EditText
+            android:id="@+id/currentpw_edttxt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:hint="Password"
+            android:scrollHorizontally="false"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#e6e6e6"
+            android:textSize="18dp"
+            android:theme="@style/EditTheme">
+
+        </EditText>
+
+            <EditText
+                android:id="@+id/newpw_edttxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:hint="New Password"
+                android:inputType="textPassword"
+                android:scrollHorizontally="false"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#e6e6e6"
+                android:textSize="18dp"
+                android:theme="@style/EditTheme">
+
+            </EditText>
+            <EditText
+                android:id="@+id/confirmnewpw_edttxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:inputType="textPassword"
+                android:hint="Confirm Password"
+                android:scrollHorizontally="false"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#e6e6e6"
+                android:textSize="18dp"
+                android:theme="@style/EditTheme">
+
+            </EditText>
+
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.8" />
+
+
+
+        <Button
+            android:id="@+id/changepw_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/white_something"
+            android:gravity="center"
+            android:text="change password"
+            android:textColor="#FFFFFF"
+            android:textSize="15dp"></Button>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+<LinearLayout
+android:layout_height="match_parent"
+android:layout_weight="10"
+android:layout_width="0dp">
+
+
+</LinearLayout>
+
+    </LinearLayout>
