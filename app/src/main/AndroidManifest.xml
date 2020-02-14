@@ -31,6 +31,11 @@
         <activity android:name=".ChangepwActivity" />
         <activity android:name=".Usermanagement" />
         <activity android:name=".AQI_index" />
+        <activity android:name=".Constants"></activity>
+        <activity android:name=".DeviceListActivity"></activity>
+        <activity android:name=".DeviceListView"/>
+
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
