@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity {
     JSONObject json;
     String result = "";
     String result_code;
-    Intent doginfo, pwchange, main, listVIew, home;
+    Intent pwchange, main, listVIew, home;
     TextView heart;
 
     private static MainActivity ins;
@@ -73,11 +73,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
-//                    case R.id.nav_dog_info: // 강아지 정보 저장을 누른 경우
-//                        Log.d("Home","Home doginfo is clicked");
-//                        doginfo = new Intent(getApplicationContext(), DogInfo.class);
-//                        startActivity(doginfo);
-//                        break;
+//
 
                     case R.id.nav_user_management: // 비밀번호 변경 버튼을 누른 경우
                         pwchange = new Intent(getApplicationContext(), Usermanagement.class);

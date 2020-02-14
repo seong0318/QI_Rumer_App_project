@@ -418,7 +418,7 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
                     if (Values.MAC.length() > 0) {
                         try {
                             Log.d("asdf2", json.toString());
-                            result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/airquality/transfer", json.toString()).get();
+                            result = new PostJSON().execute("http://teama-iot.calit2.net/rumer", json.toString()).get();
                             Log.d("asdf3", result);
                         } catch (ExecutionException e) {
                             e.printStackTrace();
