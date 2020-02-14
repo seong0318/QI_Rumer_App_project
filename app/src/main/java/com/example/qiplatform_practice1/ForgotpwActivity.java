@@ -25,7 +25,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface ForgotPwdGet {
-    @GET("/forgotpasswordhandle/1")
+    @GET("/forgotpasswordhandle")
     Call<Result> getData(@Query("user_name") String username);
 }
 
