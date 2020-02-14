@@ -140,7 +140,7 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
 
             @Override
             public void onFailure(Call<ResultUsn> call, Throwable t) {
-                Log.e("ERROR", "sign up retrofit error: " + t.getMessage());
+                Log.e("ERROR", "sign in retrofit error: " + t.getMessage());
             }
         });
     }
