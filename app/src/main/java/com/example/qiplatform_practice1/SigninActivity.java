@@ -3,6 +3,7 @@ package com.example.qiplatform_practice1;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +29,7 @@ import retrofit2.http.POST;
 interface SigninPost {
     @FormUrlEncoded
     @POST("/signinhandle/1")
-    Call<Result> postData(@FieldMap HashMap<String, Object> param);
+    Call<ResultUsn> postData(@FieldMap HashMap<String, Object> param);
 }
 
 class SigninRetrofit {
@@ -68,8 +69,7 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
     public void onClick(View view) {
         String username = usn_edttxt.getText().toString();
         String pwd = pwd_edttxt.getText().toString();
-        Call<Result> getResult;
-        HashMap<String, Object> formData;
+
 
         switch (view.getId()) {
             case R.id.forgotpwd_txt: {
@@ -77,50 +77,14 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
                 startActivity(intent);
                 return;
             }
-            case R.id.signup_txt:{
+            case R.id.signup_txt: {
                 Intent intent = new Intent(SigninActivity.this, SignupActivity.class);
                 startActivity(intent);
                 return;
             }
 
             case R.id.signin_btn: {
-                formData = new HashMap();
-                formData.put("user_name", username);
-                formData.put("pwd", pwd);
-
-                getResult = SigninRetrofit.getApiService().postData(formData);
-                getResult.enqueue(new Callback<Result>() {
-                    @Override
-                    public void onResponse(Call<Result> call, Response<Result> response) {
-                        if (response.isSuccessful()) {
-                            int execResult = response.body().getResult();
-
-                            switch (execResult) {
-                                case 0:
-                                    Intent intent = new Intent(activity, MainActivity.class);
-                                    activity.startActivity(intent);
-                                    break;
-                                case -1:
-                                    showMessage("ERROR", "Query error");
-                                    break;
-                                case -2:
-                                    showMessage("NOTICE", "Invalid username or password");
-                                    break;
-                                case -3:
-                                    showMessage("NOTICE", "Please complete email verification first");
-                                    break;
-                                default:
-                                    showMessage("ERROR", "Invalid access: " + execResult);
-                                    break;
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Result> call, Throwable t) {
-                        Log.e("ERROR", "sign in retrofit error: " + t.getMessage());
-                    }
-                });
+                signInAction(username, pwd);
             }
 
 //            Intent intent = new Intent(SigninActivity.this, PopupActivity.class);
@@ -129,6 +93,56 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
 //            startActivityForResult(intent, 1);
 //            break;
         }
+    }
+
+    public void signInAction(final String username, String pwd) {
+        HashMap<String, Object> formData;
+        Call<ResultUsn> getResult;
+        formData = new HashMap();
+        formData.put("user_name", username);
+        formData.put("pwd", pwd);
+
+        getResult = SigninRetrofit.getApiService().postData(formData);
+        getResult.enqueue(new Callback<ResultUsn>() {
+            @Override
+            public void onResponse(Call<ResultUsn> call, Response<ResultUsn> response) {
+                if (response.isSuccessful()) {
+                    int execResult = response.body().getResult();
+                    int usn;
+                    SharedPreferences sharePref;
+
+                    switch (execResult) {
+                        case 0:
+                            usn = response.body().getUsn();
+                            sharePref = getSharedPreferences("SHARE_PREF", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharePref.edit();
+                            editor.putInt("usn", usn);
+                            editor.commit();
+
+                            Intent intent = new Intent(activity, MainActivity.class);
+                            activity.startActivity(intent);
+                            break;
+                        case -1:
+                            showMessage("ERROR", "Query error");
+                            break;
+                        case -2:
+                            showMessage("NOTICE", "Invalid username or password");
+                            break;
+                        case -3:
+                            showMessage("NOTICE", "Please complete email verification first");
+                            break;
+                        default:
+                            showMessage("ERROR", "Invalid access: " + execResult);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResultUsn> call, Throwable t) {
+                Log.e("ERROR", "sign in retrofit error: " + t.getMessage());
+            }
+        });
     }
 
     public void showMessage(String title, String message) {
@@ -146,7 +160,7 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
         dialog.show();
     }
 
-    public void onBackPressed(){
+    public void onBackPressed() {
         //int i=90;
         finish();
     }
