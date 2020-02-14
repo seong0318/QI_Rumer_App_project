@@ -132,82 +132,94 @@ public class SignupActivity extends AppCompatActivity implements Button.OnClickL
         switch (view.getId()) {
             case R.id.checkid_btn:
                 username = usernameText.getText().toString();
-                getResult = UsernameCheckRetrofit.getApiService().getData(username);
-                getResult.enqueue(new Callback<Result>() {
-                    @Override
-                    public void onResponse(Call<Result> call, Response<Result> response) {
-                        if (response.isSuccessful()) {//
-                            int execResult = response.body().getResult();
-
-                            if (execResult == 0) {
-                                showMessage("Usable username", "Please continue");
-
-                                Button button = (Button) findViewById(view.getId());
-                                button.setEnabled(false);
-                                usernameText.setEnabled(false);
-                            } else if (execResult < 0) {
-                                showMessage("ERROR", "Query error");
-                            } else {
-                                showMessage("Duplicate username", "Please enter username again");
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Result> call, Throwable t) {
-                        Log.e("ERROR", "username duplicate check retrofit error" + t.getMessage());
-                    }
-                });
+                checkUsernameAction(username, view, usernameText);
                 break;
             case R.id.signup_btn:
                 username = usernameText.getText().toString();
                 email = emailText.getText().toString();
                 pwd = pwdText.getText().toString();
 
-                if (findViewById(R.id.checkid_btn).isEnabled()) {
-                    showMessage("Notice", "Please check id duplication first");
-                    return;
-                }
-
-                formData = new HashMap();
-                formData.put("user_name", username);
-                formData.put("email", email);
-                formData.put("pwd", pwd);
-
-                getResult = SignupRetrofit.getApiService().postData(formData);
-                getResult.enqueue(new Callback<Result>() {
-                    @Override
-                    public void onResponse(Call<Result> call, Response<Result> response) {
-                        if (response.isSuccessful()) {
-                            int execResult = response.body().getResult();
-//
-                            switch (execResult) {
-                                case 0:
-                                    showSuccessMessage("Successful Registration", "Please complete the account verification in the email provided.");
-                                    break;
-                                case -1:
-                                    showMessage("ERROR", "Store user Query error");
-                                    break;
-                                case -2:
-                                    showMessage("ERROR", "Store temp_user Query error");
-                                    break;
-                                case -4:
-                                    showMessage("ERROR", "Send mail error");
-                                    break;
-                                default:
-                                    showMessage("ERROR", "Invalid access " + execResult);
-                                    break;
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Result> call, Throwable t) {
-                        Log.e("ERROR", "sign up retrofit error: " + t.getMessage());
-                    }
-                });
+                signUpAction(username, email, pwd);
                 break;
         }
+    }
+
+    public void checkUsernameAction(String username, final View view, final TextView usernameText) {
+        Call<Result> getResult;
+        getResult = UsernameCheckRetrofit.getApiService().getData(username);
+        getResult.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                if (response.isSuccessful()) {//
+                    int execResult = response.body().getResult();
+
+                    if (execResult == 0) {
+                        showMessage("Usable username", "Please continue");
+
+                        Button button = (Button) findViewById(view.getId());
+                        button.setEnabled(false);
+                        usernameText.setEnabled(false);
+                    } else if (execResult < 0) {
+                        showMessage("ERROR", "Query error");
+                    } else {
+                        showMessage("Duplicate username", "Please enter username again");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                Log.e("ERROR", "username duplicate check retrofit error" + t.getMessage());
+            }
+        });
+    }
+
+    public void signUpAction(String username, String email, String pwd) {
+        HashMap<String, Object> formData;
+        Call<Result> getResult;
+
+        if (findViewById(R.id.checkid_btn).isEnabled()) {
+            showMessage("Notice", "Please check id duplication first");
+            return;
+        }
+
+        formData = new HashMap();
+        formData.put("user_name", username);
+        formData.put("email", email);
+        formData.put("pwd", pwd);
+
+        getResult = SignupRetrofit.getApiService().postData(formData);
+        getResult.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                if (response.isSuccessful()) {
+                    int execResult = response.body().getResult();
+//
+                    switch (execResult) {
+                        case 0:
+                            showSuccessMessage("Successful Registration", "Please complete the account verification in the email provided.");
+                            break;
+                        case -1:
+                            showMessage("ERROR", "Store user Query error");
+                            break;
+                        case -2:
+                            showMessage("ERROR", "Store temp_user Query error");
+                            break;
+                        case -4:
+                            showMessage("ERROR", "Send mail error");
+                            break;
+                        default:
+                            showMessage("ERROR", "Invalid access " + execResult);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                Log.e("ERROR", "sign up retrofit error: " + t.getMessage());
+            }
+        });
     }
 
     public void showMessage(String title, String message) {

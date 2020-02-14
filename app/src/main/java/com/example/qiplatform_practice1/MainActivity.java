@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 
@@ -56,8 +57,8 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface SignoutGet {
-    @GET("/signout")
-    Call<Result> getData();
+    @GET("/signout/1")
+    Call<Result> getData(@Query("usn") int usn);
 }
 
 class SignoutRetrofit {
@@ -129,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
         final View nav_headaer_view = navigationView.getHeaderView(0);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+
         drawer.addDrawerListener(actionBarDrawerToggle);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -147,47 +150,7 @@ public class MainActivity extends AppCompatActivity {
 //                        break;
 
                     case R.id.nav_sign_out: // 로그아웃 버튼을 누른 경우
-//                        showSuccessMessage("NOTICE", "Do you really want to sign out?");
-                        Call<Result> getResult = SignoutRetrofit.getApiService().getData();
-                        getResult.enqueue(new Callback<Result>() {
-                            @Override
-                            public void onResponse(Call<Result> call, Response<Result> response) {
-                                if (response.isSuccessful()) {
-                                    int execResult = response.body().getResult();
-                                    Intent intent;
-
-                                    //showMessage("test", response.body().toString());
-
-                                    switch (execResult) {
-                                        case 0:
-                                            showMessage("NOTICE", "Success sign out");
-                                            intent = new Intent(activity, MainActivity.class);
-                                            activity.startActivity(intent);
-                                            break;
-                                        case -1:
-                                            showMessage("ERROR", "Query error");
-                                            break;
-                                        case -2:
-                                            showMessage("NOTICE", "This account is already signed out");
-                                            break;
-                                        case -3:
-                                            showMessage("ERROR", "Update query error");
-                                            break;
-                                        case -4:
-                                            showFailMessage("NOTICE", "Please sign in first");
-                                            break;
-                                        default:
-                                            showMessage("ERROR", "Invalid access: " + execResult);
-                                            break;
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<Result> call, Throwable t) {
-                                Log.e("ERROR", "username duplicate check retrofit error" + t.getMessage());
-                            }
-                        });
+                        signOutAction();
                         break;
 
                     case R.id.nav_sensor_regi: // Sensor Registration 메뉴를 누른 경우
@@ -289,6 +252,53 @@ public class MainActivity extends AppCompatActivity {
 //    public void onBackPressed() { //back 버튼 차단
 //        return;
 
+        });
+    }
+
+    public void signOutAction() {
+        SharedPreferences sharePref = getSharedPreferences("SHARE_PREF", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharePref.edit();
+        int usn = sharePref.getInt("usn",0);
+        Call<Result> getResult = SignoutRetrofit.getApiService().getData(usn);
+
+        getResult.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                if (response.isSuccessful()) {
+                    int execResult = response.body().getResult();
+                    Intent intent;
+
+                    switch (execResult) {
+                        case 0:
+                            editor.clear();
+                            editor.commit();
+
+                            intent = new Intent(activity, SigninActivity.class);
+                            activity.startActivity(intent);
+                            break;
+                        case -1:
+                            showMessage("ERROR", "Query error");
+                            break;
+                        case -2:
+                            showMessage("NOTICE", "This account is already signed out");
+                            break;
+                        case -3:
+                            showMessage("ERROR", "Update query error");
+                            break;
+                        case -4:
+                            showFailMessage("NOTICE", "Please sign in first");
+                            break;
+                        default:
+                            showMessage("ERROR", "Invalid access: " + execResult);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                Log.e("ERROR", "username duplicate check retrofit error" + t.getMessage());
+            }
         });
     }
 
