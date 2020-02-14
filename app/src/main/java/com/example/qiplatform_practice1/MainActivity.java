@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -68,7 +68,7 @@ public class MainActivity extends FragmentActivity {
     ImageButton menu;
     DrawerLayout drawer;
     NavigationView nav;
-    JSONObject json;
+    private Activity activity = null;
     String result = "";
     String result_code;
     Intent pwchange, main, listVIew, home;
@@ -80,6 +80,7 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ins = this;
+        activity = this;
 
         setContentView(R.layout.activity_main);
         locationPermissionCheck();
@@ -311,8 +312,9 @@ public class MainActivity extends FragmentActivity {
 
         androidx.appcompat.app.AlertDialog dialog = builder.create();
         dialog.show();
+    }
       
-    private final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {};
+    final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {};
 
     protected void activatePolar() {
         Log.w(this.getClass().getName(), "activatePolar()");
@@ -326,6 +328,7 @@ public class MainActivity extends FragmentActivity {
         intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
         return intentFilter;
     }
+
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
