@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,7 +27,7 @@ import retrofit2.http.POST;
 
 interface SigninPost {
     @FormUrlEncoded
-    @POST("/signinhandle")
+    @POST("/signinhandle/1")
     Call<Result> postData(@FieldMap HashMap<String, Object> param);
 }
 
@@ -63,6 +62,7 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
         usn_edttxt = findViewById(R.id.usn_edttxt);
         pwd_edttxt = findViewById(R.id.pwd_edttxt);
         signin_btn = findViewById(R.id.signin_btn);
+
     }
 
     public void onClick(View view) {
@@ -118,7 +118,7 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
 
                     @Override
                     public void onFailure(Call<Result> call, Throwable t) {
-                        Log.e("ERROR", "sign up retrofit error: " + t.getMessage());
+                        Log.e("ERROR", "sign in retrofit error: " + t.getMessage());
                     }
                 });
             }
@@ -147,8 +147,6 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
     }
 
     public void onBackPressed(){
-
-
         //int i=90;
         finish();
     }

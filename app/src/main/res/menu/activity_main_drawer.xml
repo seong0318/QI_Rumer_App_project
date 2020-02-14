@@ -8,15 +8,15 @@
         <!--android:id="@+id/nav_dog_info"-->
         <!--android:icon="@drawable/ic_dog"-->
         <!--android:title="Dog Information" />-->
-
+        안드로이드 스튜디오 줄바꿈
         <item
             android:id="@+id/nav_aqi_index"
             android:icon="@drawable/ic_aqi"
             android:title="AQI Index"/>
         <item
-            android:id="@+id/nav_pw_change"
-            android:icon="@drawable/ic_password_change"
-            android:title="Password Change" />
+            android:id="@+id/nav_user_management"
+            android:icon="@drawable/ic_user"
+            android:title="Privacy Management" />
         <item
             android:id="@+id/nav_sign_out"
             android:icon="@drawable/ic_signuot"
