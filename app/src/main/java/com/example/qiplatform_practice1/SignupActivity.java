@@ -61,7 +61,7 @@ class UsernameCheckRetrofit {
 
 interface SignupPost {
     @FormUrlEncoded
-    @POST("/signuphandle/1")
+    @POST("/signuphandle")
     Call<Result> postData(@FieldMap HashMap<String, Object> param);
 }
 
