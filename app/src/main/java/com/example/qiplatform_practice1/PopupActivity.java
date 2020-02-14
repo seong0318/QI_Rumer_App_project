@@ -1,7 +1,5 @@
 package com.example.qiplatform_practice1;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -10,7 +8,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.qiplatform_practice1.ui.home.HomeFragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PopupActivity extends AppCompatActivity {
 
