@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import polar.com.sdk.api.model.PolarHrData;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -112,6 +113,7 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
     private BluetoothAdapter mBluetoothAdapter = null;
 
     private BluetoothChatService mChatService = null;
+    TextView heart;
 
     MapView mapView = null;
 
@@ -143,6 +145,14 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
+
+    }
+
+    public void displayHR(int hr) {
+        //display on the textview
+        Log.e(this.getClass().getName(), "Frag displayHR(): "+hr);
+        heart.setText(""+hr);
+
     }
 
     @Override
@@ -189,7 +199,8 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
                 .findFragmentById(R.id.fragmentMap);
         mapFragment.getMapAsync(this);
 
-        final TextView heart = view.findViewById(R.id.tv_heart);
+        heart = view.findViewById(R.id.tv_heart);
+//        heart.setText(PolarHrDataTest.hr);
 
 
 //        final Switch sw = view.findViewById(R.id.sw_alert);

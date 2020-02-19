@@ -71,7 +71,7 @@
                 android:layout_height="36dp"
                 android:layout_marginTop="8dp"
                 android:gravity="center_horizontal"
-                android:text="We just need your registered Email \nto send you password reset instructions"
+                android:text="We need your Username to send \ntemp-password to your Email address"
                 android:textColor="#FFFFFF"
                 android:textSize="14dp">
 
@@ -89,7 +89,7 @@
                 android:scrollHorizontally="false"
                 android:singleLine="true"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#555050"
+                android:textColorHint="#bfb6b6"
                 android:textSize="18dp"
                 android:theme="@style/EditTheme">
 

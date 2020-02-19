@@ -249,7 +249,6 @@ public class BluetoothChatService {
         bundle.putString(Constants.TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
-
         mState = STATE_NONE;
         // Update UI title
         updateUserInterfaceTitle();
@@ -278,6 +277,7 @@ public class BluetoothChatService {
     }
 
     /**
+     *
      * This thread runs while listening for incoming connections. It behaves
      * like a server-side client. It runs until a connection is accepted
      * (or until cancelled).
