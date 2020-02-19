@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import polar.com.sdk.api.model.PolarHrData;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -65,7 +66,7 @@ class SignoutRetrofit {
 
 public class MainActivity extends FragmentActivity {
 
-    ImageButton menu;
+    ImageButton menu, hrconnect;
     DrawerLayout drawer;
     NavigationView nav;
     private Activity activity = null;
@@ -75,6 +76,7 @@ public class MainActivity extends FragmentActivity {
     TextView heart;
 
     private static MainActivity ins;
+    HomeFragment homeFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,16 +86,16 @@ public class MainActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_main);
         locationPermissionCheck();
-
+//        PolarHrDataTest.hr
         if (savedInstanceState == null) {
+            homeFrag = new HomeFragment(MainActivity.this);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content_drawer_menu, new HomeFragment(MainActivity.this));
+            transaction.replace(R.id.content_drawer_menu, homeFrag);
             transaction.commit();
         }
         drawer = findViewById(R.id.drawer_layout);
         nav = findViewById(R.id.nav_view);
         heart = findViewById(R.id.tv_heart);
-
         menu = findViewById(R.id.ib_menu);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +103,9 @@ public class MainActivity extends FragmentActivity {
                 drawer.openDrawer(GravityCompat.START);
             }
         });
-        activatePolar();
+
+
+
 
         nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -134,10 +138,12 @@ public class MainActivity extends FragmentActivity {
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
+
                                             if (Values.USN.length() > 0) {
                                                 try {
                                                     Log.d("asdf2", jsonObject.toString());
                                                     result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/sensor/app/registration", jsonObject.toString()).get();
+
                                                     Log.d("asdf3", result);
                                                 } catch (ExecutionException e) {
                                                     e.printStackTrace();
@@ -146,6 +152,7 @@ public class MainActivity extends FragmentActivity {
                                                     e.printStackTrace();
                                                 }
                                             }
+
                                             try {
                                                 JSONObject json_data = new JSONObject(result);
                                                 Log.d("asdf5", "receive json: " + json_data.toString());
@@ -157,6 +164,7 @@ public class MainActivity extends FragmentActivity {
                                             } catch (Exception e) {
                                                 Log.e("Fail 3", e.toString());
                                             }
+
                                             if(result_code.equals("0")){
                                                 Toast.makeText(MainActivity.this, "Registration complete", Toast.LENGTH_SHORT).show();
                                             }
@@ -197,44 +205,79 @@ public class MainActivity extends FragmentActivity {
                 return true;
             }
         });
+        activatePolar();
     }
 
     public static MainActivity getInstace(){
         return ins;
     }
 
-    public void updateTheTextView(final String t) {
-        MainActivity.this.runOnUiThread(new Runnable() {
-            public void run() {
-                heart = findViewById(R.id.tv_heart);
-                heart.setText(t);
-
-                try {
-                    JSONObject json = new JSONObject(t);
-                    Log.d("asdf123", String.valueOf(json));
-                    result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/heartrate/transfer", json.toString()).get();
-                    Log.d("asdf1234", result);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-
-                JSONObject json_data = null;
-                try {
-                    json_data = new JSONObject(result);
-                    Log.d("asdf5", "receive json: " + json_data.toString());
-                    result_code = (json_data.optString("result_code"));
-                    Log.d("asdf6", "result_code: " + result_code);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        deactivatePolar();
     }
+
+    private final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {
+    };
+
+
+    public void displayHR(int hr) {
+        //display on the textview
+        Log.e(this.getClass().getName(), "displayHR(): "+hr);
+        homeFrag.displayHR(hr);
+
+    }
+
+    protected void activatePolar() {
+        Log.w(this.getClass().getName(), "activatePolar()");
+        registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
+        mPolarBleUpdateReceiver.setCaller(this);
+    }
+
+    protected void deactivatePolar() {
+        unregisterReceiver(mPolarBleUpdateReceiver);
+    }
+
+    private static IntentFilter makePolarGattUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
+        return intentFilter;
+    }
+//    public void updateTheTextView(final String t) {
+//        MainActivity.this.runOnUiThread(new Runnable() {
+//            public void run() {
+//                heart = findViewById(R.id.tv_heart);
+//                heart.setText(t);
+//
+//                try {
+//                    JSONObject json = new JSONObject(t);
+//                    Log.d("asdf123", String.valueOf(json));
+//                    result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/heartrate/transfer", json.toString()).get();
+//                    Log.d("asdf1234", result);
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                JSONObject json_data = null;
+//                try {
+//                    json_data = new JSONObject(result);
+//                    Log.d("asdf5", "receive json: " + json_data.toString());
+//                    result_code = (json_data.optString("result_code"));
+//                    Log.d("asdf6", "result_code: " + result_code);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 
     public void signOutAction() {
         SharedPreferences sharePref = getSharedPreferences("SHARE_PREF", MODE_PRIVATE);
@@ -314,20 +357,20 @@ public class MainActivity extends FragmentActivity {
         dialog.show();
     }
       
-    final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {};
-
-    protected void activatePolar() {
-        Log.w(this.getClass().getName(), "activatePolar()");
-        registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
-        mPolarBleUpdateReceiver.setCaller(this);
-    }
-    private static IntentFilter makePolarGattUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
-        return intentFilter;
-    }
+//    final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {};
+//
+//    protected void activatePolar() {
+//        Log.w(this.getClass().getName(), "activatePolar()");
+//        registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
+//        mPolarBleUpdateReceiver.setCaller(this);
+//    }
+//    private static IntentFilter makePolarGattUpdateIntentFilter() {
+//        final IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_CONNECTED);
+//        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_DISCONNECTED);
+//        intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
+//        return intentFilter;
+//    }
 
     @Override
     public void onBackPressed() {

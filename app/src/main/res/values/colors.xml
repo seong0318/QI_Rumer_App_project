@@ -18,6 +18,12 @@
     <color name="transparent">#80000000</color>
     <color name="orange">#F88340</color>
     <color name="red">#FF0015</color>
+
+    <color name="colorRecieveText">#00FF00</color>
+    <color name="colorSendText">#82CAFF</color>
+    <color name="colorStatusText">#FFDB58</color>
+
+
     <!--
     투명도
     100% — FF
