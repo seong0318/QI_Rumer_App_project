@@ -64,7 +64,6 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
     private static final String ARG_PARAM2 = "param2";
     String result_code;
 
-
     private String mParam1;
     private String mParam2;
 
@@ -84,13 +83,12 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
     private static final String TAG = "HomeFragment";
 
     // Intent request codes
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
-    private static final int REQUEST_ENABLE_BT = 3;
+//    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+//    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+//    private static final int REQUEST_ENABLE_BT = 3;
 
     // Layout Views
     private ImageButton ibBluetooth;
-    ImageView dog;
     TextView pm, no2, o3, co, so2, temp, status;
     String AQI_PM25, CO, AQI_SO2, AQI_O3, AQI_NO2, SO2, O3, NO2, TEMPERATURE, AQI_CO, PM25, MAC_ADD, TIMESTAMP, LAT, LNG;
 
@@ -119,34 +117,34 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 
     JSONObject json;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-        setHasOptionsMenu(true);
-        // Get local Bluetooth adapter
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        ibBluetooth = getActivity().findViewById(R.id.ib_bluetooth);
-        ibBluetooth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
-            }
-        });
-
-        if (mBluetoothAdapter == null) {
-            FragmentActivity activity = getActivity();
-            Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            activity.finish();
-        }
-
-    }
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//
+//        if (getArguments() != null) {
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
+//        }
+//
+//        setHasOptionsMenu(true);
+//        // Get local Bluetooth adapter
+//        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        ibBluetooth = getActivity().findViewById(R.id.ib_bluetooth);
+//        ibBluetooth.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+//                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+//            }
+//        });
+//
+//        if (mBluetoothAdapter == null) {
+//            FragmentActivity activity = getActivity();
+//            Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+//            activity.finish();
+//        }
+//
+//    }
 
     public void displayHR(int hr) {
         //display on the textview
@@ -155,19 +153,19 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-            // Otherwise, setup the chat session
-        } else if (mChatService == null) {
-            setupChat();
-        }
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        // If BT is not on, request that it be enabled.
+//        // setupChat() will then be called during onActivityResult
+//        if (!mBluetoothAdapter.isEnabled()) {
+//            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+//            // Otherwise, setup the chat session
+//        } else if (mChatService == null) {
+//
+//        }
+//    }
 
     @Override
     public void onDestroy() {
@@ -260,9 +258,7 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
     /**
      * Set up the UI and background operations for chat.
      */
-    private void setupChat() {
-        mChatService = new BluetoothChatService(getActivity(), mHandler);
-    }
+
 
     /**
      * Makes this device discoverable for 300 seconds (5 minutes).
@@ -352,161 +348,161 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
     /**
      * The Handler that gets information back from the BluetoothChatService
      */
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            FragmentActivity activity = getActivity();
-            switch (msg.what) {
-                case Constants.MESSAGE_STATE_CHANGE:
-                    switch (msg.arg1) { // 상단에 뜨는 블루투스 연결 상태 변경하는 부분
-                        case BluetoothChatService.STATE_CONNECTED:
-                            status.setText("connected to " + mConnectedDeviceName);
-                            Values.DEVICE = mConnectedDeviceName;
-                            Values.bluetooth_status = "1";
-                            break;
-                        case BluetoothChatService.STATE_CONNECTING:
-                            status.setText("connecting");
-                            break;
-                        case BluetoothChatService.STATE_LISTEN:
-                        case BluetoothChatService.STATE_NONE:
-                            status.setText("not connected");
-                            Values.bluetooth_status = "2";
-                            break;
-                    }
-                    break;
-                case Constants.MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    String writeMessage = new String(writeBuf);
-                    break;
+//    private final Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            FragmentActivity activity = getActivity();
+//            switch (msg.what) {
+//                case Constants.MESSAGE_STATE_CHANGE:
+//                    switch (msg.arg1) { // 상단에 뜨는 블루투스 연결 상태 변경하는 부분
+//                        case BluetoothChatService.STATE_CONNECTED:
+//                            status.setText("connected to " + mConnectedDeviceName);
+//                            Values.DEVICE = mConnectedDeviceName;
+//                            Values.bluetooth_status = "1";
+//                            break;
+//                        case BluetoothChatService.STATE_CONNECTING:
+//                            status.setText("connecting");
+//                            break;
+//                        case BluetoothChatService.STATE_LISTEN:
+//                        case BluetoothChatService.STATE_NONE:
+//                            status.setText("not connected");
+//                            Values.bluetooth_status = "2";
+//                            break;
+//                    }
+//                    break;
+//                case Constants.MESSAGE_WRITE:
+//                    byte[] writeBuf = (byte[]) msg.obj;
+//                    String writeMessage = new String(writeBuf);
+//                    break;
+//
+//                // 센서로부터 블루투스 데이터를 받아오는 부분
+//                case Constants.MESSAGE_READ:
+//                    byte[] readBuf = (byte[]) msg.obj;
+//                    String readMessage = new String(readBuf, 0, msg.arg1);
+//
+//                    longitude = gpsInfo.getLongitude();
+//                    latitude = gpsInfo.getLatitude();
+//
+//                    try {
+//                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                        String currentDateTime = dateFormat.format(new Date()); // Find todays date
+//
+//                        json = new JSONObject(readMessage);
+//
+//                        json.put("MAC_ADD", Values.MAC);
+//                        json.put("TIMESTAMP", currentDateTime);
+//                        json.put("LAT", latitude);
+//                        json.put("LNG", longitude);
+//
+//                        Log.d("asdfasdf", json.toString());
+//
+//                        AQI_PM25 = json.getString("AQI_PM25");
+//                        CO = json.getString("CO");
+//                        AQI_SO2 = json.getString("AQI_SO2");
+//                        AQI_O3 = json.getString("AQI_O3");
+//                        AQI_NO2 = json.getString("AQI_NO2");
+//                        SO2 = json.getString("SO2");
+//                        O3 = json.getString("O3");
+//                        NO2 = json.getString("NO2");
+//                        TEMPERATURE = json.getString("TEMPERATURE");
+//                        AQI_CO = json.getString("AQI_CO");
+//                        PM25 = json.getString("PM25");
+//                        MAC_ADD = json.getString("MAC_ADD");
+//                        TIMESTAMP = json.getString("TIMESTAMP");
+//                        LAT = json.getString("LAT");
+//                        LNG = json.getString("LNG");
+//
+//                        pm.setText(AQI_PM25);
+//                        so2.setText(AQI_SO2);
+//                        o3.setText(AQI_O3);
+//                        no2.setText(AQI_NO2);
+//                        temp.setText(TEMPERATURE);
+//                        co.setText(AQI_CO);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    if (Values.MAC.length() > 0) {
+//                        try {
+//                            Log.d("asdf2", json.toString());
+//                            result = new PostJSON().execute("http://teama-iot.calit2.net/rumer", json.toString()).get();
+//                            Log.d("asdf3", result);
+//                        } catch (ExecutionException e) {
+//                            e.printStackTrace();
+//                        }catch (Exception e) {
+//                            Log.d("asdf411", e.toString());
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    break;
+//                case Constants.MESSAGE_DEVICE_NAME:
+//                    // save the connected device's name
+//                    mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
+//                    if (null != activity) {
+//                        Toast.makeText(activity, "Connected to "
+//                                + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+//                    }
+//                    break;
+//                case Constants.MESSAGE_TOAST:
+//                    if (null != activity) {
+//                        Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                    break;
+//            }
+//        }
+//    };
 
-                // 센서로부터 블루투스 데이터를 받아오는 부분
-                case Constants.MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    String readMessage = new String(readBuf, 0, msg.arg1);
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        switch (requestCode) {
+//            case REQUEST_CONNECT_DEVICE_SECURE:
+//                // When DeviceListActivity returns with a device to connect
+//                Log.d("SECURE BEFORE", "INSECURE IN RESULT IS CALLED");
+//                if (resultCode == Activity.RESULT_OK) {
+//                    Log.d("SECURE", "SECURE IN RESULT IS CALLED");
+//                    connectDevice(data, true);
+//                }
+//                break;
+//            case REQUEST_CONNECT_DEVICE_INSECURE:
+//                // When DeviceListActivity returns with a device to connect
+//                Log.d("INSECURE BEFORE", "INSECURE IN RESULT IS CALLED");
+//                if (resultCode == Activity.RESULT_OK) {
+//                    Log.d("INSECURE AFTER", "INSECURE IN RESULT IS CALLED");
+//                    connectDevice(data, false);
+//                }
+//                break;
+//            case REQUEST_ENABLE_BT:
+//                // When the request to enable Bluetooth returns
+//                if (resultCode == Activity.RESULT_OK) {
+//                    // Bluetooth is now enabled, so set up a chat session
+//
+//                } else {
+//                    // User did not enable Bluetooth or an error occurred
+//                    Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
+//                            Toast.LENGTH_SHORT).show();
+//                    getActivity().finish();
+//                }
+//        }
+//    }
 
-                    longitude = gpsInfo.getLongitude();
-                    latitude = gpsInfo.getLatitude();
-
-                    try {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String currentDateTime = dateFormat.format(new Date()); // Find todays date
-
-                        json = new JSONObject(readMessage);
-
-                        json.put("MAC_ADD", Values.MAC);
-                        json.put("TIMESTAMP", currentDateTime);
-                        json.put("LAT", latitude);
-                        json.put("LNG", longitude);
-
-                        Log.d("asdfasdf", json.toString());
-
-                        AQI_PM25 = json.getString("AQI_PM25");
-                        CO = json.getString("CO");
-                        AQI_SO2 = json.getString("AQI_SO2");
-                        AQI_O3 = json.getString("AQI_O3");
-                        AQI_NO2 = json.getString("AQI_NO2");
-                        SO2 = json.getString("SO2");
-                        O3 = json.getString("O3");
-                        NO2 = json.getString("NO2");
-                        TEMPERATURE = json.getString("TEMPERATURE");
-                        AQI_CO = json.getString("AQI_CO");
-                        PM25 = json.getString("PM25");
-                        MAC_ADD = json.getString("MAC_ADD");
-                        TIMESTAMP = json.getString("TIMESTAMP");
-                        LAT = json.getString("LAT");
-                        LNG = json.getString("LNG");
-
-                        pm.setText(AQI_PM25);
-                        so2.setText(AQI_SO2);
-                        o3.setText(AQI_O3);
-                        no2.setText(AQI_NO2);
-                        temp.setText(TEMPERATURE);
-                        co.setText(AQI_CO);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (Values.MAC.length() > 0) {
-                        try {
-                            Log.d("asdf2", json.toString());
-                            result = new PostJSON().execute("http://teama-iot.calit2.net/rumer", json.toString()).get();
-                            Log.d("asdf3", result);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }catch (Exception e) {
-                            Log.d("asdf411", e.toString());
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-                case Constants.MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
-                    if (null != activity) {
-                        Toast.makeText(activity, "Connected to "
-                                + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                case Constants.MESSAGE_TOAST:
-                    if (null != activity) {
-                        Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-            }
-        }
-    };
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE_SECURE:
-                // When DeviceListActivity returns with a device to connect
-                Log.d("SECURE BEFORE", "INSECURE IN RESULT IS CALLED");
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.d("SECURE", "SECURE IN RESULT IS CALLED");
-                    connectDevice(data, true);
-                }
-                break;
-            case REQUEST_CONNECT_DEVICE_INSECURE:
-                // When DeviceListActivity returns with a device to connect
-                Log.d("INSECURE BEFORE", "INSECURE IN RESULT IS CALLED");
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.d("INSECURE AFTER", "INSECURE IN RESULT IS CALLED");
-                    connectDevice(data, false);
-                }
-                break;
-            case REQUEST_ENABLE_BT:
-                // When the request to enable Bluetooth returns
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth is now enabled, so set up a chat session
-                    setupChat();
-                } else {
-                    // User did not enable Bluetooth or an error occurred
-                    Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
-                            Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
-                }
-        }
-    }
-
-    /**
-     * Establish connection with other device
-     *
-     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
-     * @param secure Socket Security type - Secure (true) , Insecure (false)
-     */
-    private void connectDevice(Intent data, boolean secure) {
-        // Get the device MAC address
-        String address = data.getExtras()
-                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-
-        Values.MAC = data.getExtras()
-                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-        // Get the BluetoothDevice object
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        // Attempt to connect to the device
-        mChatService.connect(device, secure);
-    }
+//    /**
+//     * Establish connection with other device
+//     *
+//     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+//     * @param secure Socket Security type - Secure (true) , Insecure (false)
+//     */
+//    private void connectDevice(Intent data, boolean secure) {
+//        // Get the device MAC address
+//        String address = data.getExtras()
+//                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+//
+//        Values.MAC = data.getExtras()
+//                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+//        // Get the BluetoothDevice object
+//        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+//        // Attempt to connect to the device
+//        mChatService.connect(device, secure);
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
