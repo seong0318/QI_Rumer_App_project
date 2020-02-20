@@ -129,7 +129,8 @@
             android:gravity="center"
             android:text="change password"
             android:textColor="#FFFFFF"
-            android:textSize="15dp"></Button>
+            android:textSize="15dp"
+            android:enabled="false"></Button>
 
 
     </LinearLayout>

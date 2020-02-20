@@ -126,8 +126,6 @@ public class SignupActivity extends AppCompatActivity implements Button.OnClickL
         TextView emailText = (TextView) findViewById(R.id.email_edttxt);
         TextView pwdText = (TextView) findViewById(R.id.pwd_edttxt);
         String username, email, pwd;
-        Call<Result> getResult;
-        HashMap<String, Object> formData;
 
         switch (view.getId()) {
             case R.id.checkid_btn:
