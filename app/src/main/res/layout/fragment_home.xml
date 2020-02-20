@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.27" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -60,11 +60,12 @@
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="not connected"
-        android:textSize="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Heart-rate"
+        android:fontFamily="@font/nanumsquare_acb"
+        android:textColor="@color/orange"
+        android:textSize="40dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -198,20 +199,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <TextView
-        android:id="@+id/tv_heart"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="0"
-        android:textColor="#000000"
-        android:textSize="65sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_status" />
+        app:layout_constraintTop_toBottomOf="@id/tv_status"
+        >
+
+        <ImageView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/heart"
+            app:layout_constraintLeft_toLeftOf="@id/tv_heart"
+            >
+
+        </ImageView>
+        <TextView
+            android:id="@+id/tv_heart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0"
+            android:layout_marginLeft="7dp"
+            android:textColor="#000000"
+            android:textSize="65sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+
+
+    </LinearLayout>
+
+
 
     <fragment
         android:id="@+id/fragmentMap"

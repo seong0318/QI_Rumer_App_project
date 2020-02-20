@@ -45,7 +45,7 @@ public class DeviceListView extends AppCompatActivity {
         if (Values.USN.length() > 0) {
             try {
                 Log.d("asdf2", jsonObject.toString());
-                result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/sensor/app/listview", jsonObject.toString()).get();
+                result = new PostJSON().execute("http://teama-iot.calit2.net/sensorlist", jsonObject.toString()).get();
                 Log.d("asdf3", result);
             } catch (ExecutionException e) {
                 e.printStackTrace();
