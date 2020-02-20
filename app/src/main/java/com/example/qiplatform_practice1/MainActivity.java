@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+
 import polar.com.sdk.api.model.PolarHrData;
+
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -105,12 +107,10 @@ public class MainActivity extends FragmentActivity {
         });
 
 
-
-
         nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
 //
 
                     case R.id.nav_user_management: // 비밀번호 변경 버튼을 누른 경우
@@ -123,7 +123,7 @@ public class MainActivity extends FragmentActivity {
                         break;
 
                     case R.id.nav_sensor_regi: // Sensor Registration 메뉴를 누른 경우
-                        if(Values.bluetooth_status.equals("1")) { // 센서가 어플리케이션에 연결되어 있는 경우
+                        if (Values.bluetooth_status.equals("1")) { // 센서가 어플리케이션에 연결되어 있는 경우
                             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() { // dialog 창을 띄움
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -147,7 +147,7 @@ public class MainActivity extends FragmentActivity {
                                                     Log.d("asdf3", result);
                                                 } catch (ExecutionException e) {
                                                     e.printStackTrace();
-                                                }catch (Exception e) {
+                                                } catch (Exception e) {
                                                     Log.d("asdf411", e.toString());
                                                     e.printStackTrace();
                                                 }
@@ -165,10 +165,9 @@ public class MainActivity extends FragmentActivity {
                                                 Log.e("Fail 3", e.toString());
                                             }
 
-                                            if(result_code.equals("0")){
+                                            if (result_code.equals("0")) {
                                                 Toast.makeText(MainActivity.this, "Registration complete", Toast.LENGTH_SHORT).show();
-                                            }
-                                            else if(result_code.equals("1")){
+                                            } else if (result_code.equals("1")) {
                                                 Toast.makeText(MainActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
                                             }
                                             break;
@@ -181,8 +180,7 @@ public class MainActivity extends FragmentActivity {
                             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                             builder.setMessage("Add " + Values.DEVICE + " to sensor list").setPositiveButton("Yes", dialogClickListener)
                                     .setNegativeButton("No", dialogClickListener).show();
-                        }
-                        else if(Values.bluetooth_status.equals("2")) { // 센서와 연결되지있지 않은 경우
+                        } else if (Values.bluetooth_status.equals("2")) { // 센서와 연결되지있지 않은 경우
                             Toast.makeText(MainActivity.this, "Connect device first", Toast.LENGTH_LONG).show();
                         }
                         break;
@@ -208,7 +206,7 @@ public class MainActivity extends FragmentActivity {
         activatePolar();
     }
 
-    public static MainActivity getInstace(){
+    public static MainActivity getInstace() {
         return ins;
     }
 
@@ -224,7 +222,7 @@ public class MainActivity extends FragmentActivity {
 
     public void displayHR(int hr) {
         //display on the textview
-        Log.e(this.getClass().getName(), "displayHR(): "+hr);
+        Log.e(this.getClass().getName(), "displayHR(): " + hr);
         homeFrag.displayHR(hr);
 
     }
@@ -282,7 +280,7 @@ public class MainActivity extends FragmentActivity {
     public void signOutAction() {
         SharedPreferences sharePref = getSharedPreferences("SHARE_PREF", MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharePref.edit();
-        int usn = sharePref.getInt("usn",0);
+        int usn = sharePref.getInt("usn", 0);
         Call<Result> getResult = SignoutRetrofit.getApiService().getData(usn);
 
         getResult.enqueue(new Callback<Result>() {
@@ -356,7 +354,7 @@ public class MainActivity extends FragmentActivity {
         androidx.appcompat.app.AlertDialog dialog = builder.create();
         dialog.show();
     }
-      
+
 //    final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {};
 //
 //    protected void activatePolar() {
@@ -380,6 +378,7 @@ public class MainActivity extends FragmentActivity {
             super.onBackPressed();
         }
     }
+
     public void locationPermissionCheck() {
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

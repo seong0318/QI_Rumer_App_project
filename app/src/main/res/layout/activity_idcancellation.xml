@@ -83,7 +83,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="0.5"/>
             <EditText
-                android:id="@+id/username_edttxt"
+                android:id="@+id/pwd_edttxt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="15dp"

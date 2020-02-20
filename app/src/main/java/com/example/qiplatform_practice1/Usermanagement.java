@@ -8,13 +8,12 @@ import android.view.View;
 import android.widget.ImageView;
 
 public class Usermanagement extends AppCompatActivity {
-ImageView changepw_btn1, idcancellation_btn1;
+    ImageView changepw_btn1, idcancellation_btn1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usermanagement);
-
-
 
 
     }
@@ -24,12 +23,14 @@ ImageView changepw_btn1, idcancellation_btn1;
             case R.id.changepw_btn1: {
                 Intent intent = new Intent(Usermanagement.this, ChangepwActivity.class);
                 startActivity(intent);
-                return; }
+                return;
+            }
 
             case R.id.idcancellation_btn1: {
                 Intent intent = new Intent(Usermanagement.this, Idcancellation.class);
                 startActivity(intent);
-                return; }
+                return;
+            }
 
         }
     }
