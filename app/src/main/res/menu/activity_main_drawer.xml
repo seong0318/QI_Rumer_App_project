@@ -36,10 +36,12 @@
                 android:title="Sensor List View" />
 
             <item
-                android:id="@+id/nav_heart"
+                android:id="@+id/nav_history"
                 android:icon="@drawable/ic_heart_history"
-                android:title="Heart History"
+                android:title="History"
                 />
+
+
         </menu>
     </item>
 
