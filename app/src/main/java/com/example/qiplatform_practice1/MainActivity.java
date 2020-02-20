@@ -68,7 +68,7 @@ class SignoutRetrofit {
 
 public class MainActivity extends FragmentActivity {
 
-    ImageButton menu, hrconnect;
+    ImageButton menu, ib_bluetooth;
     DrawerLayout drawer;
     NavigationView nav;
     private Activity activity = null;
@@ -96,6 +96,7 @@ public class MainActivity extends FragmentActivity {
             transaction.commit();
         }
         drawer = findViewById(R.id.drawer_layout);
+        ib_bluetooth = findViewById(R.id.ib_bluetooth);
         nav = findViewById(R.id.nav_view);
         heart = findViewById(R.id.tv_heart);
         menu = findViewById(R.id.ib_menu);
@@ -103,6 +104,14 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View view) {
                 drawer.openDrawer(GravityCompat.START);
+            }
+        });
+
+        ib_bluetooth.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, UdoActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -142,7 +151,7 @@ public class MainActivity extends FragmentActivity {
                                             if (Values.USN.length() > 0) {
                                                 try {
                                                     Log.d("asdf2", jsonObject.toString());
-                                                    result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/sensor/app/registration", jsonObject.toString()).get();
+                                                    result = new PostJSON().execute("http://teama-iot.calit2.net/rumer", jsonObject.toString()).get();
 
                                                     Log.d("asdf3", result);
                                                 } catch (ExecutionException e) {

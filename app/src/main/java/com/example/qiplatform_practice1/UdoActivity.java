@@ -44,8 +44,8 @@ public class UdoActivity extends AppCompatActivity implements ServiceConnection,
 
 
         addrText = findViewById(R.id.addr_text);
-//        addrText.setText("E0:E5:CF:01:33:B0");//<!--소원이꺼-->
-        addrText.setText("5C:31:3E:27:CF:69");//<!--정민이꺼-->
+        addrText.setText("E0:E5:CF:01:33:B0");//<!--소원이꺼-->
+//        addrText.setText("5C:31:3E:27:CF:69");//<!--정민이꺼-->
         addrText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
         addrBtn = findViewById(R.id.addr_btn);
         addrBtn.setOnClickListener(new View.OnClickListener() {
