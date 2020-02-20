@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -86,12 +87,6 @@ public class SigninActivity extends AppCompatActivity implements Button.OnClickL
             case R.id.signin_btn: {
                 signInAction(username, pwd);
             }
-
-//            Intent intent = new Intent(SigninActivity.this, PopupActivity.class);
-//            intent.putExtra("username", username);
-//            intent.putExtra("password", pwd);
-//            startActivityForResult(intent, 1);
-//            break;
         }
     }
 

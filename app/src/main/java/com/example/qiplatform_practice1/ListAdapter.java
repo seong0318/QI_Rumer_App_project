@@ -18,39 +18,32 @@ public class ListAdapter extends BaseAdapter {
     private int nListCnt = 0;
     Button delete;
 
-    public ListAdapter(ArrayList<ItemData> _oData)
-    {
+    public ListAdapter(ArrayList<ItemData> _oData) {
         m_oData = _oData;
         nListCnt = m_oData.size();
     }
 
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         Log.i("TAG", "getCount");
         return nListCnt;
     }
 
     @Override
-    public Object getItem(int position)
-    {
+    public Object getItem(int position) {
         return m_oData.get(position);
     }
 
     @Override
-    public long getItemId(int position)
-    {
+    public long getItemId(int position) {
         return 0;
     }
 
     @Override
-    public View getView(int position, View convertView, final ViewGroup parent)
-    {
-        if (convertView == null)
-        {
+    public View getView(int position, View convertView, final ViewGroup parent) {
+        if (convertView == null) {
             final Context context = parent.getContext();
-            if (inflater == null)
-            {
+            if (inflater == null) {
                 inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
             convertView = inflater.inflate(R.layout.listview_item, parent, false);

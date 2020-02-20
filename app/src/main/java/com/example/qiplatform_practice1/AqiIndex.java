@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class AQI_index extends AppCompatActivity {
+public class AqiIndex extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

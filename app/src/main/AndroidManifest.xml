@@ -23,13 +23,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".UdoActivity">
-        </activity>
-        <service android:name=".SerialService" />
         <activity android:name=".Idcancellation" />
         <activity android:name=".ChangepwActivity" />
         <activity android:name=".Usermanagement" />
-        <activity android:name=".AQI_index" />
+        <activity android:name=".AqiIndex" />
         <activity android:name=".Constants" />
         <activity android:name=".DeviceListActivity" />
         <activity android:name=".DeviceListView" />
@@ -42,10 +39,6 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".PopupActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/popupTheme" />
         <activity android:name=".ForgotpwActivity" />
         <activity
             android:name=".SignupActivity"
@@ -62,10 +55,6 @@
         <activity
             android:name=".SigninActivity"
             android:theme="@style/Transparent" />
-        <activity
-            android:name=".VerifyPopupActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/popupTheme" />
 
     </application>
 
