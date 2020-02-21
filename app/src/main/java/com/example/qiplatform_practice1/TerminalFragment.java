@@ -1,113 +1,122 @@
 package com.example.qiplatform_practice1;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-public class UdoActivity extends AppCompatActivity implements ServiceConnection, SerialListener {
-    private enum Connected {False, Pending, True}
+public class TerminalFragment extends Fragment implements ServiceConnection, SerialListener {
+
+    private enum Connected { False, Pending, True }
 
     private String deviceAddress;
     private String newline = "\r\n";
+
+    private TextView receiveText;
 
     private SerialSocket socket;
     private SerialService service;
     private boolean initialStart = true;
     private Connected connected = Connected.False;
 
-    private TextView addrText;
-    private TextView receiveText;
-    View addrBtn;
-    View sendBtn;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_udo);
-        //deviceAddress = "E0:E5:CF:01:33:B0";
-        //deviceAddress = "44:78:3E:7C:89:45";  Samsung Tab 5
-
-
-
-        addrText = findViewById(R.id.addr_text);
-        addrText.setText("E0:E5:CF:01:33:B0");//<!--소원이꺼-->
-//        addrText.setText("5C:31:3E:27:CF:69");//<!--정민이꺼-->
-        addrText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
-        addrBtn = findViewById(R.id.addr_btn);
-        addrBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deviceAddress = addrText.getText().toString();
-                if (initialStart) {
-                    initialStart = false;
-                    connect();
-                }
-            }
-        });
-
-        receiveText = findViewById(R.id.send_text);
-        receiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
-        sendBtn = findViewById(R.id.send_btn);
-        sendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                send(receiveText.getText().toString());
-            }
-        });
-    }
-
     /*
      * Lifecycle
      */
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        setRetainInstance(true);
+        deviceAddress = getArguments().getString("device");
+    }
 
     @Override
     public void onDestroy() {
         if (connected != Connected.False)
             disconnect();
-        stopService(new Intent(this, SerialService.class));
+        getActivity().stopService(new Intent(getActivity(), SerialService.class));
         super.onDestroy();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (service != null)
+        if(service != null)
             service.attach(this);
-        else {
-            this.bindService(new Intent(this, SerialService.class), this, Context.BIND_AUTO_CREATE);
-        }
+        else
+            getActivity().startService(new Intent(getActivity(), SerialService.class)); // prevents service destroy on unbind from recreated activity caused by orientation change
     }
 
     @Override
     public void onStop() {
-        if (service != null && !this.isChangingConfigurations())
+        if(service != null && !getActivity().isChangingConfigurations())
             service.detach();
         super.onStop();
+    }
+
+    @SuppressWarnings("deprecation") // onAttach(context) was added with API 23. onAttach(activity) works for all API versions
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        getActivity().bindService(new Intent(getActivity(), SerialService.class), this, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onDetach() {
+        try { getActivity().unbindService(this); } catch(Exception ignored) {}
+        super.onDetach();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        startService(new Intent(this, SerialService.class));
+        if(initialStart && service !=null) {
+            initialStart = false;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TerminalFragment.this.connect();
+                }
+            });
+        }
     }
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
         service = ((SerialService.SerialBinder) binder).getService();
+        if(initialStart && isResumed()) {
+            initialStart = false;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TerminalFragment.this.connect();
+                }
+            });
+        }
     }
 
     @Override
@@ -118,14 +127,28 @@ public class UdoActivity extends AppCompatActivity implements ServiceConnection,
     /*
      * UI
      */
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_terminal, container, false);
+        receiveText = view.findViewById(R.id.receive_text);                          // TextView performance decreases with number of spans
+        receiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
+        receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
+        final TextView sendText = view.findViewById(R.id.send_text);
+        View sendBtn = view.findViewById(R.id.send_btn);
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TerminalFragment.this.send(sendText.getText().toString());
+            }
+        });
+        return view;
+    }
 
-/*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_terminal, menu);
     }
-*/
-/*
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -134,13 +157,16 @@ public class UdoActivity extends AppCompatActivity implements ServiceConnection,
             return true;
         } else if (id ==R.id.newline) {
             String[] newlineNames = getResources().getStringArray(R.array.newline_names);
-            String[] newlineValues = getResources().getStringArray(R.array.newline_values);
+            final String[] newlineValues = getResources().getStringArray(R.array.newline_values);
             int pos = java.util.Arrays.asList(newlineValues).indexOf(newline);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Newline");
-            builder.setSingleChoiceItems(newlineNames, pos, (dialog, item1) -> {
-                newline = newlineValues[item1];
-                dialog.dismiss();
+            builder.setSingleChoiceItems(newlineNames, pos, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item1) {
+                    newline = newlineValues[item1];
+                    dialog.dismiss();
+                }
             });
             builder.create().show();
             return true;
@@ -148,14 +174,12 @@ public class UdoActivity extends AppCompatActivity implements ServiceConnection,
             return super.onOptionsItemSelected(item);
         }
     }
-*/
+
     /*
      * Serial + UI
      */
-
     private void connect() {
         try {
-            Log.w(this.getClass().getName(), "connect() at: "+deviceAddress);
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
             String deviceName = device.getName() != null ? device.getName() : device.getAddress();
@@ -163,7 +187,7 @@ public class UdoActivity extends AppCompatActivity implements ServiceConnection,
             connected = Connected.Pending;
             socket = new SerialSocket();
             service.connect(this, "Connected to " + deviceName);
-            socket.connect(this, service, device);
+            socket.connect(getContext(), service, device);
         } catch (Exception e) {
             onSerialConnectError(e);
         }
@@ -177,15 +201,12 @@ public class UdoActivity extends AppCompatActivity implements ServiceConnection,
     }
 
     private void send(String str) {
-        Log.w(this.getClass().getName(), "send() -->"+str);
-
-        if (connected != Connected.True) {
-            Toast.makeText(this, "not connected", Toast.LENGTH_SHORT).show();
+        if(connected != Connected.True) {
+            Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             return;
         }
         try {
-            Log.w(this.getClass().getName(), "ok sending "+str);
-            SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');
+            SpannableStringBuilder spn = new SpannableStringBuilder(str+'\n');
             spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSendText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             receiveText.append(spn);
             byte[] data = (str + newline).getBytes();
@@ -196,14 +217,15 @@ public class UdoActivity extends AppCompatActivity implements ServiceConnection,
     }
 
     private void receive(byte[] data) {
-        Log.w(this.getClass().getName(), new String(data));
-        //receiveText.append(new String(data));
+        receiveText.append(new String(data));
+
+        Log.d("test",receiveText.getText().toString());
     }
 
     private void status(String str) {
-        SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');
+        SpannableStringBuilder spn = new SpannableStringBuilder(str+'\n');
         spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorStatusText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        //receiveText.append(spn);
+        receiveText.append(spn);
     }
 
     /*

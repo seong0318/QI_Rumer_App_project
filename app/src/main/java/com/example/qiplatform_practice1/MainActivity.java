@@ -107,7 +107,8 @@ public class MainActivity extends FragmentActivity {
         ib_bluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent itent = new Intent(MainActivity.this, Udoactivity.class);
+                startActivity(itent);
             }
         });
 
@@ -134,14 +135,15 @@ public class MainActivity extends FragmentActivity {
                         startActivity(listVIew);
                         break;
 
-//                    case R.id.nav_heart:
-//                        Intent heart = new Intent(getApplicationContext(), HeartHistory.class);
-//                        startActivity(heart);
-//                        break;
+                    case R.id.nav_history:
+                        Intent heart = new Intent(getApplicationContext(), History.class);
+                        startActivity(heart);
+                        break;
+
 
                     case R.id.nav_aqi_index:
-                        Intent aqi = new Intent(getApplicationContext(), AQI_index.class);
-                        startActivity(aqi);
+                        Intent aqiidx = new Intent(getApplicationContext(), AQI_index.class);
+                        startActivity(aqiidx);
                         break;
                 }
                 return true;

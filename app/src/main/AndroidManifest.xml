@@ -24,8 +24,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".SensorReg"></activity>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".History" />
+        <activity android:name=".Udoactivity" />
         <activity android:name=".SensorRegistration"></activity>
-        <activity android:name=".UdoActivity"></activity>
 
         <service android:name=".SerialService" />
 
