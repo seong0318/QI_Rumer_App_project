@@ -2,10 +2,13 @@ package com.example.qiplatform_practice1;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,10 +22,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import polar.com.sdk.api.model.PolarHrData;
 
 import androidx.annotation.Nullable;
@@ -49,34 +54,34 @@ import java.util.concurrent.ExecutionException;
  */
 public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyCallback {
 
+    private MyPolarBleReceiver mPolarBleUpdateReceiver;
     private float mMapZoomLevel = 14;
-    public static GpsInfo gpsInfo;
+    static GpsInfo gpsInfo;
     GoogleMap mMap;
-    static View view; //프래그먼트의 뷰 인스턴스
+    View view; //프래그먼트의 뷰 인스턴스
     Context context;
     Button call;
     String device, data;
     String Co, So2, No2, o_3, pm25;
-//@@//
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     String result_code;
+    private ImageView heart_img;
 
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    public HomeFragment(Context context) {
+    HomeFragment(Context context) {
         // Required empty public constructor
         this.context = context;
-        this.context = context;
-        this.gpsInfo = new GpsInfo(context);
-        this.gpsInfo.getLocation();
-        if (!this.gpsInfo.isGetLocation()) {
-            this.gpsInfo.showSettingsAlert();     // GPS setting Alert
+        gpsInfo = new GpsInfo(context);
+        gpsInfo.getLocation();
+        if (!gpsInfo.isGetLocation()) {
+            gpsInfo.showSettingsAlert();     // GPS setting Alert
         }
     }
 
@@ -89,7 +94,7 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 
     // Layout Views
     private ImageButton ibBluetooth;
-    TextView pm, no2, o3, co, so2, temp, status;
+    private TextView pm, no2, o3, co, so2, temp, status;
     String AQI_PM25, CO, AQI_SO2, AQI_O3, AQI_NO2, SO2, O3, NO2, TEMPERATURE, AQI_CO, PM25, MAC_ADD, TIMESTAMP, LAT, LNG;
 
     Double latitude;
@@ -146,10 +151,10 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 //
 //    }
 
-    public void displayHR(int hr) {
+    void displayHR(int hr) {
         //display on the textview
-        Log.e(this.getClass().getName(), "Frag displayHR(): "+hr);
-        heart.setText(""+hr);
+        Log.e(this.getClass().getName(), "Frag displayHR(): " + hr);
+        heart.setText("" + hr);
 
     }
 
@@ -198,6 +203,13 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
         mapFragment.getMapAsync(this);
 
         heart = view.findViewById(R.id.tv_heart);
+        heart_img = view.findViewById(R.id.heart_img);
+        heart_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMacAddressAndStartPolar();
+            }
+        });
 //        heart.setText(PolarHrDataTest.hr);
 
 
@@ -237,7 +249,52 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
         return view;
     }
 
+    public void setMacAddressAndStartPolar() {
+        AlertDialog.Builder ad = new AlertDialog.Builder(getContext());
+        ad.setTitle("NOTICE");
+        ad.setMessage("Input mac address");
+        final EditText et = new EditText(getContext());
+        ad.setView(et);
 
+        ad.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String mac = et.getText().toString();
+                mPolarBleUpdateReceiver = new MyPolarBleReceiver(mac, true);
+                activatePolar();
+                dialog.dismiss();
+            }
+        });
+
+        ad.setNegativeButton("Disconnect", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getContext().getApplicationContext(), "Disconnect Polar sensor", Toast.LENGTH_LONG).show();
+                if (mPolarBleUpdateReceiver != null)
+                    deactivatePolar();
+                dialog.dismiss();
+            }
+        });
+        ad.show();
+    }
+
+    protected void activatePolar() {
+        getContext().registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
+        mPolarBleUpdateReceiver.setCaller(MainActivity.getInstace());
+    }
+
+    protected void deactivatePolar() {
+        getContext().unregisterReceiver(mPolarBleUpdateReceiver);
+//        mPolarBleUpdateReceiver = null;
+    }
+
+    private static IntentFilter makePolarGattUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
+        return intentFilter;
+    }
 
     public interface OnFragmentInteractionListener {
 
@@ -503,7 +560,6 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 //        // Attempt to connect to the device
 //        mChatService.connect(device, secure);
 //    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

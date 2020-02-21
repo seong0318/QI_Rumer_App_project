@@ -2,20 +2,24 @@ package com.example.qiplatform_practice1;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import polar.com.sdk.api.model.PolarHrData;
-
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +34,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,16 +68,14 @@ class SignoutRetrofit {
 public class MainActivity extends FragmentActivity {
     private boolean startPolarRecord = false;
     private MyPolarBleReceiver mPolarBleUpdateReceiver;
-    ImageButton menu, ib_bluetooth;
-    DrawerLayout drawer;
-    NavigationView nav;
+    private ImageButton menu, ib_bluetooth, heart_img;
+    private DrawerLayout drawer;
+    private NavigationView nav;
     private Activity activity = null;
-    String result = "";
-    String result_code;
-    Intent pwchange, main, listVIew, home;
-    TextView heart;
+    private Intent pwchange, main, listVIew, home;
 
     private static MainActivity ins;
+
     HomeFragment homeFrag;
 
     @Override
@@ -98,8 +95,10 @@ public class MainActivity extends FragmentActivity {
         }
         drawer = findViewById(R.id.drawer_layout);
         ib_bluetooth = findViewById(R.id.ib_bluetooth);
+        heart_img = findViewById(R.id.heart_img);
+
         nav = findViewById(R.id.nav_view);
-        heart = findViewById(R.id.tv_heart);
+        TextView heart = findViewById(R.id.tv_heart);
         menu = findViewById(R.id.ib_menu);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,30 +110,23 @@ public class MainActivity extends FragmentActivity {
         ib_bluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, UdoActivity.class);
-//                startActivity(intent);
-                startPolarRecord = !startPolarRecord;
-
-                if (startPolarRecord) {
-                    Toast.makeText(getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
-                    mPolarBleUpdateReceiver = new MyPolarBleReceiver("ff:ff:ff:ff:ff:ff", startPolarRecord) {
-                    };
-                    activatePolar();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Disonnect Polar sensor", Toast.LENGTH_LONG).show();
-
-                    if (startPolarRecord)
-                        deactivatePolar();
-                }
+//                setMacAddressAndStartPolar();
             }
         });
+
+//        heart_img.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setMacAddressAndStartPolar();
+//            }
+//        });
+
+
 
         nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-//
-
                     case R.id.nav_user_management: // 비밀번호 변경 버튼을 누른 경우
                         pwchange = new Intent(getApplicationContext(), Usermanagement.class);
                         startActivity(pwchange);
@@ -191,13 +183,13 @@ public class MainActivity extends FragmentActivity {
     }
 
     protected void activatePolar() {
-        Log.w(this.getClass().getName(), "activatePolar()");
         registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
         mPolarBleUpdateReceiver.setCaller(this);
     }
 
     protected void deactivatePolar() {
         unregisterReceiver(mPolarBleUpdateReceiver);
+//        mPolarBleUpdateReceiver = null;
     }
 
     private static IntentFilter makePolarGattUpdateIntentFilter() {
@@ -260,7 +252,7 @@ public class MainActivity extends FragmentActivity {
 
                             intent = new Intent(activity, SigninActivity.class);
                             activity.startActivity(intent);
-                            if (startPolarRecord)
+                            if (mPolarBleUpdateReceiver != null)
                                 deactivatePolar();
                             break;
                         case -1:
@@ -287,6 +279,35 @@ public class MainActivity extends FragmentActivity {
                 Log.e("ERROR", "username duplicate check retrofit error" + t.getMessage());
             }
         });
+    }
+
+    public void setMacAddressAndStartPolar() {
+        AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
+        ad.setTitle("NOTICE");
+        ad.setMessage("Input mac address");
+        final EditText et = new EditText(MainActivity.this);
+        ad.setView(et);
+
+        ad.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String mac = et.getText().toString();
+                mPolarBleUpdateReceiver = new MyPolarBleReceiver(mac, true);
+                activatePolar();
+                dialog.dismiss();
+            }
+        });
+
+        ad.setNegativeButton("Disconnect", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Disconnect Polar sensor", Toast.LENGTH_LONG).show();
+                if (mPolarBleUpdateReceiver != null)
+                    deactivatePolar();
+                dialog.dismiss();
+            }
+        });
+        ad.show();
     }
 
     public void showFailMessage(String title, String message) {
@@ -352,6 +373,3 @@ public class MainActivity extends FragmentActivity {
         }
     }
 }
-
-
-

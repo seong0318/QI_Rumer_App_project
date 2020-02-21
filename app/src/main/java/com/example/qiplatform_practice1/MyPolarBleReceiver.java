@@ -77,10 +77,10 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context ctx, Intent intent) {
+    public void onReceive(final Context ctx, Intent intent) {
         GpsInfo gpsInfo = HomeFragment.gpsInfo;
-
         final String action = intent.getAction();
+
         if (ACTION_GATT_CONNECTED.equals(action)) {
             Log.w(this.getClass().getName(), "####ACTION_GATT_CONNECTED");
         } else if (ACTION_GATT_DISCONNECTED.equals(action)) {
@@ -96,6 +96,8 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
             int totalNN = Integer.parseInt(tokens.nextToken());
             int lastRRvalue = Integer.parseInt(tokens.nextToken());
             String sessionId = tokens.nextToken();
+
+            Log.w("dddddddddddddd", "mac: " + this.macAddress);
 
             caller.displayHR(heartRate);
 
@@ -118,6 +120,7 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
 
                             switch (execResult) {
                                 case 0:
+                                    Toast.makeText(ctx.getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
                                     break;
                                 case -1:
                                     Log.e(TAG, "Sql query error");
@@ -126,7 +129,7 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
                                     Log.e(TAG, "Duplicate primary key in polar_data table");
                                     break;
                                 case -3:
-                                    Log.e(TAG, "not insert");
+                                    Toast.makeText(ctx.getApplicationContext(), "Check your mac address", Toast.LENGTH_LONG).show();
                                     break;
                                 default:
                                     Log.e(TAG, "Invalid access");
