@@ -70,6 +70,7 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
     private BluetoothChatService mChatService = null;
     private TextView heart;
 
+
     HomeFragment(Context context) {
         // Required empty public constructor
         this.context = context;

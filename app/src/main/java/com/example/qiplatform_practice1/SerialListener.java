@@ -2,7 +2,7 @@ package com.example.qiplatform_practice1;
 
 interface SerialListener {
     void onSerialConnect();
-    void onSerialConnectError(Exception e);
+    void onSerialConnectError (Exception e);
     void onSerialRead(byte[] data);
-    void onSerialIoError(Exception e);
+    void onSerialIoError      (Exception e);
 }

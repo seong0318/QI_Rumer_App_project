@@ -4,19 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    tools:context=".HistoryChart">
+    android:background="@drawable/bg_login">
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/nanumsquare_aceb"
         android:layout_marginTop="20dp"
-        android:text="Heart data history"
+        android:text="Heart-Rate data history"
         android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_co"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CO"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintTop_toBottomOf="@id/tv_startDate"
+        app:layout_constraintEnd_toStartOf="@id/btn_so2"/>
+
+    <Button
+        android:id="@+id/btn_so2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SO2"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@id/btn_co"
+        app:layout_constraintTop_toBottomOf="@id/tv_startDate"
+        app:layout_constraintEnd_toStartOf="@id/btn_no2"/>
+
+    <Button
+        android:id="@+id/btn_no2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NO2"
+        app:layout_constraintStart_toEndOf="@id/btn_so2"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        app:layout_constraintTop_toTopOf="@id/btn_so2"
+        app:layout_constraintBottom_toBottomOf="@id/btn_so2"/>
+
+    <Button
+        android:id="@+id/btn_o3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="O3"
+        app:layout_constraintTop_toBottomOf="@id/btn_co"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintEnd_toStartOf="@id/btn_pm25"/>
+
+    <Button
+        android:id="@+id/btn_pm25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PM25"
+        app:layout_constraintTop_toBottomOf="@id/btn_so2"
+        app:layout_constraintStart_toEndOf="@id/btn_o3"
+        app:layout_constraintEnd_toStartOf="@id/gl_right"/>
 
     <TextView
         android:id="@+id/tv_startDate"
@@ -44,15 +92,18 @@
         app:layout_constraintEnd_toEndOf="@id/gl_right"
         app:layout_constraintStart_toEndOf="@id/tv_startDate"/>
 
-    <Button
-        android:id="@+id/btn_view"
+    <TextView
+        android:id="@+id/tv_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="View data"
+        android:text="DEVICE NAME"
+        android:textStyle="bold"
         android:layout_marginTop="10dp"
+        android:textSize="17sp"
         app:layout_constraintStart_toStartOf="@id/gl_left"
         app:layout_constraintEnd_toEndOf="@id/gl_right"
-        app:layout_constraintTop_toBottomOf="@id/tv_startDate"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintBottom_toBottomOf="@id/gl_top1"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/linechart1"
@@ -63,7 +114,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/gl_right"
         app:layout_constraintStart_toStartOf="@id/gl_left"
-        app:layout_constraintTop_toBottomOf="@id/btn_view">
+        app:layout_constraintTop_toBottomOf="@id/btn_pm25">
     </com.github.mikephil.charting.charts.LineChart>
 
     <androidx.constraintlayout.widget.Guideline
