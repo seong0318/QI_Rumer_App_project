@@ -2,20 +2,24 @@ package com.example.qiplatform_practice1;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import polar.com.sdk.api.model.PolarHrData;
-
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +34,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,17 +66,15 @@ class SignoutRetrofit {
 }
 
 public class MainActivity extends FragmentActivity {
-
-    ImageButton menu, ib_bluetooth;
-    DrawerLayout drawer;
-    NavigationView nav;
+    private MyPolarBleReceiver mPolarBleUpdateReceiver;
+    private ImageButton menu, ib_bluetooth;
+    private DrawerLayout drawer;
+    private NavigationView nav;
     private Activity activity = null;
-    String result = "";
-    String result_code;
-    Intent pwchange, main, listVIew, home;
-    TextView heart;
+    private Intent pwchange, main, listVIew, home;
 
     private static MainActivity ins;
+
     HomeFragment homeFrag;
 
     @Override
@@ -88,7 +85,6 @@ public class MainActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_main);
         locationPermissionCheck();
-//        PolarHrDataTest.hr
         if (savedInstanceState == null) {
             homeFrag = new HomeFragment(MainActivity.this);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -97,8 +93,9 @@ public class MainActivity extends FragmentActivity {
         }
         drawer = findViewById(R.id.drawer_layout);
         ib_bluetooth = findViewById(R.id.ib_bluetooth);
+
         nav = findViewById(R.id.nav_view);
-        heart = findViewById(R.id.tv_heart);
+        TextView heart = findViewById(R.id.tv_heart);
         menu = findViewById(R.id.ib_menu);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +104,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-        ib_bluetooth.setOnClickListener(new View.OnClickListener(){
+        ib_bluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent itent = new Intent(MainActivity.this, Udoactivity.class);
@@ -115,13 +112,10 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-
         nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-//
-
                     case R.id.nav_user_management: // 비밀번호 변경 버튼을 누른 경우
                         pwchange = new Intent(getApplicationContext(), Usermanagement.class);
                         startActivity(pwchange);
@@ -132,66 +126,8 @@ public class MainActivity extends FragmentActivity {
                         break;
 
                     case R.id.nav_sensor_regi: // Sensor Registration 메뉴를 누른 경우
-                        if (Values.bluetooth_status.equals("1")) { // 센서가 어플리케이션에 연결되어 있는 경우
-                            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() { // dialog 창을 띄움
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    switch (which) {
-                                        case DialogInterface.BUTTON_POSITIVE: // Dialog 에서 yes 버튼을 누른 경우
-                                            JSONObject jsonObject = new JSONObject();
-                                            try {
-                                                jsonObject.put("USN", Values.USN);
-                                                jsonObject.put("DEVICE", Values.DEVICE);
-                                                jsonObject.put("MAC_ADD", Values.MAC);
-                                                Log.d("asdf1", jsonObject.toString());
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-
-                                            if (Values.USN.length() > 0) {
-                                                try {
-                                                    Log.d("asdf2", jsonObject.toString());
-                                                    result = new PostJSON().execute("http://teama-iot.calit2.net/rumer", jsonObject.toString()).get();
-
-                                                    Log.d("asdf3", result);
-                                                } catch (ExecutionException e) {
-                                                    e.printStackTrace();
-                                                } catch (Exception e) {
-                                                    Log.d("asdf411", e.toString());
-                                                    e.printStackTrace();
-                                                }
-                                            }
-
-                                            try {
-                                                JSONObject json_data = new JSONObject(result);
-                                                Log.d("asdf5", "receive json: " + json_data.toString());
-                                                result_code = (json_data.optString("result_code"));
-                                                Values.SSN = (json_data.optString("SSN"));
-                                                Log.d("asdf6", "result_code: " + result_code);
-                                                Log.d("asdf7", "SSN: " + Values.SSN);
-
-                                            } catch (Exception e) {
-                                                Log.e("Fail 3", e.toString());
-                                            }
-
-                                            if (result_code.equals("0")) {
-                                                Toast.makeText(MainActivity.this, "Registration complete", Toast.LENGTH_SHORT).show();
-                                            } else if (result_code.equals("1")) {
-                                                Toast.makeText(MainActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
-                                            }
-                                            break;
-                                        case DialogInterface.BUTTON_NEGATIVE: // dialog 창에서 no 버튼을 누른 경우
-                                            Toast.makeText(MainActivity.this, "Cancel", Toast.LENGTH_LONG).show();
-                                            break;
-                                    }
-                                }
-                            };
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setMessage("Add " + Values.DEVICE + " to sensor list").setPositiveButton("Yes", dialogClickListener)
-                                    .setNegativeButton("No", dialogClickListener).show();
-                        } else if (Values.bluetooth_status.equals("2")) { // 센서와 연결되지있지 않은 경우
-                            Toast.makeText(MainActivity.this, "Connect device first", Toast.LENGTH_LONG).show();
-                        }
+                        Intent intent = new Intent(getApplicationContext(), SensorRegistration.class);
+                        startActivity(intent);
                         break;
 
                     case R.id.nav_sensor_list: // Sensor List View 버튼을 누른 경우
@@ -213,7 +149,6 @@ public class MainActivity extends FragmentActivity {
                 return true;
             }
         });
-        activatePolar();
     }
 
     public static MainActivity getInstace() {
@@ -226,10 +161,6 @@ public class MainActivity extends FragmentActivity {
         deactivatePolar();
     }
 
-    private final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {
-    };
-
-
     public void displayHR(int hr) {
         //display on the textview
         Log.e(this.getClass().getName(), "displayHR(): " + hr);
@@ -238,7 +169,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     protected void activatePolar() {
-        Log.w(this.getClass().getName(), "activatePolar()");
         registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
         mPolarBleUpdateReceiver.setCaller(this);
     }
@@ -254,38 +184,6 @@ public class MainActivity extends FragmentActivity {
         intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
         return intentFilter;
     }
-//    public void updateTheTextView(final String t) {
-//        MainActivity.this.runOnUiThread(new Runnable() {
-//            public void run() {
-//                heart = findViewById(R.id.tv_heart);
-//                heart.setText(t);
-//
-//                try {
-//                    JSONObject json = new JSONObject(t);
-//                    Log.d("asdf123", String.valueOf(json));
-//                    result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/heartrate/transfer", json.toString()).get();
-//                    Log.d("asdf1234", result);
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                JSONObject json_data = null;
-//                try {
-//                    json_data = new JSONObject(result);
-//                    Log.d("asdf5", "receive json: " + json_data.toString());
-//                    result_code = (json_data.optString("result_code"));
-//                    Log.d("asdf6", "result_code: " + result_code);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
 
     public void signOutAction() {
         SharedPreferences sharePref = getSharedPreferences("SHARE_PREF", MODE_PRIVATE);
@@ -307,6 +205,8 @@ public class MainActivity extends FragmentActivity {
 
                             intent = new Intent(activity, SigninActivity.class);
                             activity.startActivity(intent);
+                            if (mPolarBleUpdateReceiver != null)
+                                deactivatePolar();
                             break;
                         case -1:
                             showMessage("ERROR", "Query error");
@@ -365,21 +265,6 @@ public class MainActivity extends FragmentActivity {
         dialog.show();
     }
 
-//    final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {};
-//
-//    protected void activatePolar() {
-//        Log.w(this.getClass().getName(), "activatePolar()");
-//        registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
-//        mPolarBleUpdateReceiver.setCaller(this);
-//    }
-//    private static IntentFilter makePolarGattUpdateIntentFilter() {
-//        final IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_CONNECTED);
-//        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_DISCONNECTED);
-//        intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
-//        return intentFilter;
-//    }
-
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -397,6 +282,3 @@ public class MainActivity extends FragmentActivity {
         }
     }
 }
-
-
-
