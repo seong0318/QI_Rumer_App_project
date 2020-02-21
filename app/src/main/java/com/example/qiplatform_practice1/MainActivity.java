@@ -66,9 +66,8 @@ class SignoutRetrofit {
 }
 
 public class MainActivity extends FragmentActivity {
-    private boolean startPolarRecord = false;
     private MyPolarBleReceiver mPolarBleUpdateReceiver;
-    private ImageButton menu, ib_bluetooth, heart_img;
+    private ImageButton menu, ib_bluetooth;
     private DrawerLayout drawer;
     private NavigationView nav;
     private Activity activity = null;
@@ -86,7 +85,6 @@ public class MainActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_main);
         locationPermissionCheck();
-//        PolarHrDataTest.hr
         if (savedInstanceState == null) {
             homeFrag = new HomeFragment(MainActivity.this);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -95,7 +93,6 @@ public class MainActivity extends FragmentActivity {
         }
         drawer = findViewById(R.id.drawer_layout);
         ib_bluetooth = findViewById(R.id.ib_bluetooth);
-        heart_img = findViewById(R.id.heart_img);
 
         nav = findViewById(R.id.nav_view);
         TextView heart = findViewById(R.id.tv_heart);
@@ -110,18 +107,9 @@ public class MainActivity extends FragmentActivity {
         ib_bluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                setMacAddressAndStartPolar();
+
             }
         });
-
-//        heart_img.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                setMacAddressAndStartPolar();
-//            }
-//        });
-
-
 
         nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -171,10 +159,6 @@ public class MainActivity extends FragmentActivity {
         deactivatePolar();
     }
 
-//    private final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver("aa:bb:cc:dd:ee:ff", startPolarRecord) {
-//    };
-
-
     public void displayHR(int hr) {
         //display on the textview
         Log.e(this.getClass().getName(), "displayHR(): " + hr);
@@ -189,7 +173,6 @@ public class MainActivity extends FragmentActivity {
 
     protected void deactivatePolar() {
         unregisterReceiver(mPolarBleUpdateReceiver);
-//        mPolarBleUpdateReceiver = null;
     }
 
     private static IntentFilter makePolarGattUpdateIntentFilter() {
@@ -199,38 +182,6 @@ public class MainActivity extends FragmentActivity {
         intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
         return intentFilter;
     }
-//    public void updateTheTextView(final String t) {
-//        MainActivity.this.runOnUiThread(new Runnable() {
-//            public void run() {
-//                heart = findViewById(R.id.tv_heart);
-//                heart.setText(t);
-//
-//                try {
-//                    JSONObject json = new JSONObject(t);
-//                    Log.d("asdf123", String.valueOf(json));
-//                    result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/heartrate/transfer", json.toString()).get();
-//                    Log.d("asdf1234", result);
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                JSONObject json_data = null;
-//                try {
-//                    json_data = new JSONObject(result);
-//                    Log.d("asdf5", "receive json: " + json_data.toString());
-//                    result_code = (json_data.optString("result_code"));
-//                    Log.d("asdf6", "result_code: " + result_code);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
 
     public void signOutAction() {
         SharedPreferences sharePref = getSharedPreferences("SHARE_PREF", MODE_PRIVATE);
@@ -281,35 +232,6 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
-    public void setMacAddressAndStartPolar() {
-        AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
-        ad.setTitle("NOTICE");
-        ad.setMessage("Input mac address");
-        final EditText et = new EditText(MainActivity.this);
-        ad.setView(et);
-
-        ad.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String mac = et.getText().toString();
-                mPolarBleUpdateReceiver = new MyPolarBleReceiver(mac, true);
-                activatePolar();
-                dialog.dismiss();
-            }
-        });
-
-        ad.setNegativeButton("Disconnect", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Disconnect Polar sensor", Toast.LENGTH_LONG).show();
-                if (mPolarBleUpdateReceiver != null)
-                    deactivatePolar();
-                dialog.dismiss();
-            }
-        });
-        ad.show();
-    }
-
     public void showFailMessage(String title, String message) {
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setTitle(title);
@@ -340,21 +262,6 @@ public class MainActivity extends FragmentActivity {
         androidx.appcompat.app.AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-//    final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {};
-//
-//    protected void activatePolar() {
-//        Log.w(this.getClass().getName(), "activatePolar()");
-//        registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
-//        mPolarBleUpdateReceiver.setCaller(this);
-//    }
-//    private static IntentFilter makePolarGattUpdateIntentFilter() {
-//        final IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_CONNECTED);
-//        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_DISCONNECTED);
-//        intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
-//        return intentFilter;
-//    }
 
     @Override
     public void onBackPressed() {
