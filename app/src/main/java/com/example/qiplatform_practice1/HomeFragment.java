@@ -117,34 +117,6 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 
     JSONObject json;
 
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//
-//        setHasOptionsMenu(true);
-//        // Get local Bluetooth adapter
-//        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//        ibBluetooth = getActivity().findViewById(R.id.ib_bluetooth);
-//        ibBluetooth.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-//                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
-//            }
-//        });
-//
-//        if (mBluetoothAdapter == null) {
-//            FragmentActivity activity = getActivity();
-//            Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-//            activity.finish();
-//        }
-//
-//    }
 
     public void displayHR(int hr) {
         //display on the textview
@@ -153,18 +125,7 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // If BT is not on, request that it be enabled.
-//        // setupChat() will then be called during onActivityResult
-//        if (!mBluetoothAdapter.isEnabled()) {
-//            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-//            // Otherwise, setup the chat session
-//        } else if (mChatService == null) {
 //
-//        }
 //    }
 
     @Override
@@ -353,7 +314,7 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 //        public void handleMessage(Message msg) {
 //            FragmentActivity activity = getActivity();
 //            switch (msg.what) {
-//                case Constants.MESSAGE_STATE_CHANGE:
+//                case Constants1.MESSAGE_STATE_CHANGE:
 //                    switch (msg.arg1) { // 상단에 뜨는 블루투스 연결 상태 변경하는 부분
 //                        case BluetoothChatService.STATE_CONNECTED:
 //                            status.setText("connected to " + mConnectedDeviceName);
@@ -370,13 +331,13 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 //                            break;
 //                    }
 //                    break;
-//                case Constants.MESSAGE_WRITE:
+//                case Constants1.MESSAGE_WRITE:
 //                    byte[] writeBuf = (byte[]) msg.obj;
 //                    String writeMessage = new String(writeBuf);
 //                    break;
 //
 //                // 센서로부터 블루투스 데이터를 받아오는 부분
-//                case Constants.MESSAGE_READ:
+//                case Constants1.MESSAGE_READ:
 //                    byte[] readBuf = (byte[]) msg.obj;
 //                    String readMessage = new String(readBuf, 0, msg.arg1);
 //
@@ -435,17 +396,17 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 //                        }
 //                    }
 //                    break;
-//                case Constants.MESSAGE_DEVICE_NAME:
+//                case Constants1.MESSAGE_DEVICE_NAME:
 //                    // save the connected device's name
-//                    mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
+//                    mConnectedDeviceName = msg.getData().getString(Constants1.DEVICE_NAME);
 //                    if (null != activity) {
 //                        Toast.makeText(activity, "Connected to "
 //                                + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
 //                    }
 //                    break;
-//                case Constants.MESSAGE_TOAST:
+//                case Constants1.MESSAGE_TOAST:
 //                    if (null != activity) {
-//                        Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
+//                        Toast.makeText(activity, msg.getData().getString(Constants1.TOAST),
 //                                Toast.LENGTH_SHORT).show();
 //                    }
 //                    break;

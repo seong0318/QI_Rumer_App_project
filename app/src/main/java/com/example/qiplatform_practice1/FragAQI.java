@@ -1,6 +1,5 @@
 package com.example.qiplatform_practice1;
 
-
 import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,15 +28,16 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class FragHeart extends Fragment {
+
+public class FragAQI extends Fragment {
     private View view;
-    private TextView fromdate_txt, todate_txt;
+    private TextView fromdate_txt2, todate_txt2;
     private DatePickerDialog.OnDateSetListener callbackMethod;
 
 
-    public static FragHeart newinstance() {
-        FragHeart fragHeart = new FragHeart();
-        return fragHeart;
+    public static FragAQI newinstance() {
+        FragAQI fragAQI = new FragAQI();
+        return fragAQI;
     }
 //    LineChart mChart;
 //    ArrayList<Entry> values = new ArrayList<>();
@@ -47,7 +47,7 @@ public class FragHeart extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frag_heart, container, false);
+        view = inflater.inflate(R.layout.frag_aqi, container, false);
 
         LineChart lineChart = view.findViewById(R.id.chart);
 
@@ -63,9 +63,9 @@ public class FragHeart extends Fragment {
         LineDataSet lineDataSet = new LineDataSet(entries, "User");
         lineDataSet.setLineWidth(2);
         lineDataSet.setCircleRadius(6);
-        lineDataSet.setCircleColor(Color.parseColor("#F88340"));
+        lineDataSet.setCircleColor(Color.parseColor("#FF0015"));
         lineDataSet.setCircleColorHole(Color.BLUE);
-        lineDataSet.setColor(Color.parseColor("#F88340"));
+        lineDataSet.setColor(Color.parseColor("#FF0015"));
         lineDataSet.setDrawCircleHole(true);
         lineDataSet.setDrawCircles(true);
         lineDataSet.setDrawHorizontalHighlightIndicator(false);
@@ -110,8 +110,8 @@ public class FragHeart extends Fragment {
 
     public void InitializeView() {
 
-        fromdate_txt = view.findViewById(R.id.fromdate_txt);
-        fromdate_txt.setOnClickListener(new View.OnClickListener() {
+        fromdate_txt2 = view.findViewById(R.id.fromdate_txt2);
+        fromdate_txt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View a) {
                 whichDate=true;
@@ -120,8 +120,8 @@ public class FragHeart extends Fragment {
                 dialog.show();
             }
         });
-        todate_txt = view.findViewById(R.id.todate_txt);
-        todate_txt.setOnClickListener(new View.OnClickListener() {
+        todate_txt2 = view.findViewById(R.id.todate_txt2);
+        todate_txt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 whichDate=false;
@@ -138,9 +138,9 @@ public class FragHeart extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 if(whichDate){
-                    fromdate_txt.setText(monthOfYear + " / " + dayOfMonth + " / " + year);
+                    fromdate_txt2.setText(monthOfYear + " / " + dayOfMonth + " / " + year);
                 }else{
-                    todate_txt.setText(monthOfYear + " / "+dayOfMonth+" / "+year);
+                    todate_txt2.setText(monthOfYear + " / "+dayOfMonth+" / "+year);
                 }
             }
 
@@ -150,3 +150,4 @@ public class FragHeart extends Fragment {
 
 
 }
+

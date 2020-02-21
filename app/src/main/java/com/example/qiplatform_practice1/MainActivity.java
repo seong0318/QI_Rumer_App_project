@@ -110,8 +110,8 @@ public class MainActivity extends FragmentActivity {
         ib_bluetooth.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, UdoActivity.class);
-                startActivity(intent);
+                Intent itent = new Intent(MainActivity.this, Udoactivity.class);
+                startActivity(itent);
             }
         });
 

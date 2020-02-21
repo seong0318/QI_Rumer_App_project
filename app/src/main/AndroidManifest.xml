@@ -24,12 +24,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".SensorReg"></activity>
+
         <uses-library
             android:name="org.apache.http.legacy"
-            android:required="false"/>
-        <activity android:name=".History"></activity>
+            android:required="false" />
 
-        <activity android:name=".UdoActivity" />
+        <activity android:name=".History" />
+        <activity android:name=".Udoactivity" />
 
         <service android:name=".SerialService" />
 
@@ -40,7 +42,6 @@
         <activity android:name=".Constants" />
         <activity android:name=".DeviceListActivity" />
         <activity android:name=".DeviceListView" />
-
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

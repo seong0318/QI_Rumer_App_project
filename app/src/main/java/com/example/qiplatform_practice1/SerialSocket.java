@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -15,8 +14,7 @@ import java.util.concurrent.Executors;
 
 class SerialSocket implements Runnable {
 
-    //private static final UUID BLUETOOTH_SPP = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private static final UUID BLUETOOTH_SPP = UUID.fromString("94f39d29-7d6d-437d-973b-fba39e49d4ee");  //from BT Chat
+    private static final UUID BLUETOOTH_SPP = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     private final BroadcastReceiver disconnectBroadcastReceiver;
 
@@ -67,7 +65,6 @@ class SerialSocket implements Runnable {
     }
 
     void write(byte[] data) throws IOException {
-        Log.w(this.getClass().getName(), "write()");
         if (!connected)
             throw new IOException("not connected");
         socket.getOutputStream().write(data);
@@ -91,7 +88,6 @@ class SerialSocket implements Runnable {
             return;
         }
         connected = true;
-        Log.w(this.getClass().getName(), "connect socket");
         try {
             byte[] buffer = new byte[1024];
             int len;

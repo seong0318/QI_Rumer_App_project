@@ -20,7 +20,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return FragHeart.newinstance();
             case 1:
-                return FragAqi.newinstance();
+                return FragAQI.newinstance();
         }
 
         return null;
