@@ -3,11 +3,64 @@ package com.example.qiplatform_practice1;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
+import retrofit2.http.Tag;
+
+import static android.content.Context.MODE_PRIVATE;
+
+interface InsertPolarDataPost {
+    @FormUrlEncoded
+    @POST("/sensor/insert/polar")
+    Call<Result> postData(@FieldMap HashMap<String, Object> param);
+}
+
+class InsertPolarDataRetrofit {
+    private static final String baseUrl = new Url().getUrl();
+
+    public static InsertPolarDataPost getApiService() {
+        return getInstance().create(InsertPolarDataPost.class);
+    }
+
+    private static Retrofit getInstance() {
+        Gson gson = new GsonBuilder().setLenient().create();
+
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+    }
+}
+
 public class MyPolarBleReceiver extends BroadcastReceiver {
+    private String TAG = "MyPolarBleReceiver";
+    private boolean startPolarRecord;
+    private String macAddress;
+
+    public MyPolarBleReceiver(String macAddress, boolean startPolarRecord) {
+        this.macAddress = macAddress;
+        this.startPolarRecord = startPolarRecord;
+    }
+
     public final static String ACTION_GATT_CONNECTED =
             "edu.ucsd.healthware.fw.device.ble.ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED =
@@ -20,11 +73,14 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
     MainActivity caller;
 
     public void setCaller(MainActivity caller) {
-        this.caller = caller; }
+        this.caller = caller;
+    }
 
     @Override
-    public void onReceive(Context ctx, Intent intent) {
+    public void onReceive(final Context ctx, Intent intent) {
+        GpsInfo gpsInfo = HomeFragment.gpsInfo;
         final String action = intent.getAction();
+
         if (ACTION_GATT_CONNECTED.equals(action)) {
             Log.w(this.getClass().getName(), "####ACTION_GATT_CONNECTED");
         } else if (ACTION_GATT_DISCONNECTED.equals(action)) {
@@ -40,8 +96,55 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
             int totalNN = Integer.parseInt(tokens.nextToken());
             int lastRRvalue = Integer.parseInt(tokens.nextToken());
             String sessionId = tokens.nextToken();
+
+            Log.w("dddddddddddddd", "mac: " + this.macAddress);
+
             caller.displayHR(heartRate);
-            Log.w(this.getClass().getName(), "####Received heartRate: " + heartRate + " pnnPercentage: " + pnnPercentage + " pnnCount: " + pnnCount + " rrThreshold: " + rrThreshold + " totalNN: " + totalNN + " lastRRvalue: " + lastRRvalue + " sessionId: " + sessionId);
+
+            if (startPolarRecord) {
+                HashMap<String, Object> sendData = new HashMap<>();
+                Call<Result> getResult;
+                sendData.put("lat", gpsInfo.getLatitude());
+                sendData.put("lng", gpsInfo.getLongitude());
+                sendData.put("hr", heartRate);
+                sendData.put("rr", lastRRvalue);
+                sendData.put("mac", this.macAddress);
+
+                getResult = InsertPolarDataRetrofit.getApiService().postData(sendData);
+                getResult.enqueue(new Callback<Result>() {
+                    @Override
+                    public void onResponse(Call<Result> call, Response<Result> response) {
+                        if (response.isSuccessful()) {
+                            assert response.body() != null;
+                            int execResult = response.body().getResult();
+
+                            switch (execResult) {
+                                case 0:
+                                    Toast.makeText(ctx.getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
+                                    break;
+                                case -1:
+                                    Log.e(TAG, "Sql query error");
+                                    break;
+                                case -2:
+                                    Log.e(TAG, "Duplicate primary key in polar_data table");
+                                    break;
+                                case -3:
+                                    Toast.makeText(ctx.getApplicationContext(), "Check your mac address", Toast.LENGTH_LONG).show();
+                                    break;
+                                default:
+                                    Log.e(TAG, "Invalid access");
+                                    break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Result> call, Throwable t) {
+                        Log.e("ERROR", "username duplicate check retrofit error" + t.getMessage());
+                    }
+                });
+//                Log.w(this.getClass().getName(), "####Mac address" + this.macAddress + "Received heartRate: " + heartRate + " pnnPercentage: " + pnnPercentage + " pnnCount: " + pnnCount + " rrThreshold: " + rrThreshold + " totalNN: " + totalNN + " lastRRvalue: " + lastRRvalue + " sessionId: " + sessionId);
+            }
         }
     }
 }
