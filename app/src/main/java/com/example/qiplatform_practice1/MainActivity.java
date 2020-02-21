@@ -67,7 +67,8 @@ class SignoutRetrofit {
 }
 
 public class MainActivity extends FragmentActivity {
-
+    private boolean startPolarRecord = false;
+    private MyPolarBleReceiver mPolarBleUpdateReceiver;
     ImageButton menu, ib_bluetooth;
     DrawerLayout drawer;
     NavigationView nav;
@@ -107,14 +108,28 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-        ib_bluetooth.setOnClickListener(new View.OnClickListener(){
+        ib_bluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, UdoActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(MainActivity.this, UdoActivity.class);
+//                startActivity(intent);
+                SharedPreferences sharePref = getSharedPreferences("SHARE_PREF", MODE_PRIVATE);
+                final SharedPreferences.Editor editor = sharePref.edit();
+                int usn = sharePref.getInt("usn", 0);
+
+                startPolarRecord = !startPolarRecord;
+
+                if (startPolarRecord) {
+                    Toast.makeText(getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
+                    mPolarBleUpdateReceiver = new MyPolarBleReceiver("aa:bb:cc:dd:ee:ff", usn, startPolarRecord) {
+                    };
+                    activatePolar();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Disonnect Polar sensor", Toast.LENGTH_LONG).show();
+                    deactivatePolar();
+                }
             }
         });
-
 
         nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -212,7 +227,6 @@ public class MainActivity extends FragmentActivity {
                 return true;
             }
         });
-        activatePolar();
     }
 
     public static MainActivity getInstace() {
@@ -225,8 +239,8 @@ public class MainActivity extends FragmentActivity {
         deactivatePolar();
     }
 
-    private final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {
-    };
+//    private final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver("aa:bb:cc:dd:ee:ff", startPolarRecord) {
+//    };
 
 
     public void displayHR(int hr) {

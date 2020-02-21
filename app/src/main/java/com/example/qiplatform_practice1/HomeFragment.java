@@ -50,7 +50,7 @@ import java.util.concurrent.ExecutionException;
 public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyCallback {
 
     private float mMapZoomLevel = 14;
-    GpsInfo gpsInfo;
+    public static GpsInfo gpsInfo;
     GoogleMap mMap;
     static View view; //프래그먼트의 뷰 인스턴스
     Context context;
