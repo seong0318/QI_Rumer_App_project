@@ -53,14 +53,12 @@ class InsertPolarDataRetrofit {
 
 public class MyPolarBleReceiver extends BroadcastReceiver {
     private String TAG = "MyPolarBleReceiver";
-    private int usn;
     private boolean startPolarRecord;
     private String macAddress;
 
-    public MyPolarBleReceiver(String macAddress, int usn, boolean startPolarRecord) {
+    public MyPolarBleReceiver(String macAddress, boolean startPolarRecord) {
         this.macAddress = macAddress;
         this.startPolarRecord = startPolarRecord;
-        this.usn = usn;
     }
 
     public final static String ACTION_GATT_CONNECTED =
@@ -104,12 +102,10 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
             if (startPolarRecord) {
                 HashMap<String, Object> sendData = new HashMap<>();
                 Call<Result> getResult;
-//                Log.w("ddddddddddddddddd", "lat: " + gpsInfo.getLatitude() + "lng: " + gpsInfo.getLongitude());
                 sendData.put("lat", gpsInfo.getLatitude());
                 sendData.put("lng", gpsInfo.getLongitude());
                 sendData.put("hr", heartRate);
                 sendData.put("rr", lastRRvalue);
-                sendData.put("usn", this.usn);
                 sendData.put("mac", this.macAddress);
 
                 getResult = InsertPolarDataRetrofit.getApiService().postData(sendData);
@@ -119,7 +115,6 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
                         if (response.isSuccessful()) {
                             assert response.body() != null;
                             int execResult = response.body().getResult();
-                            Log.w("dddddddddddddddd", "execResult: " + execResult);
 
                             switch (execResult) {
                                 case 0:
