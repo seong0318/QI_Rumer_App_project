@@ -1,27 +1,18 @@
 package com.example.qiplatform_practice1;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -29,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
@@ -66,7 +58,8 @@ class SignoutRetrofit {
 }
 
 public class MainActivity extends FragmentActivity {
-    private MyPolarBleReceiver mPolarBleUpdateReceiver;
+    private HomeFragment homeFragment;
+    private FragmentManager fragmentManager;
     private ImageButton menu, ib_bluetooth;
     private DrawerLayout drawer;
     private NavigationView nav;
@@ -82,18 +75,21 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         ins = this;
         activity = this;
+        fragmentManager = getSupportFragmentManager();
+        homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.fragmentMap);
 
         setContentView(R.layout.activity_main);
         locationPermissionCheck();
+
         if (savedInstanceState == null) {
             homeFrag = new HomeFragment(MainActivity.this);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_drawer_menu, homeFrag);
             transaction.commit();
         }
+
         drawer = findViewById(R.id.drawer_layout);
         ib_bluetooth = findViewById(R.id.ib_bluetooth);
-
         nav = findViewById(R.id.nav_view);
         TextView heart = findViewById(R.id.tv_heart);
         menu = findViewById(R.id.ib_menu);
@@ -158,7 +154,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        deactivatePolar();
+        homeFragment.deactivatePolar();
     }
 
     public void displayHR(int hr) {
@@ -166,15 +162,6 @@ public class MainActivity extends FragmentActivity {
         Log.e(this.getClass().getName(), "displayHR(): " + hr);
         homeFrag.displayHR(hr);
 
-    }
-
-    protected void activatePolar() {
-        registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
-        mPolarBleUpdateReceiver.setCaller(this);
-    }
-
-    protected void deactivatePolar() {
-        unregisterReceiver(mPolarBleUpdateReceiver);
     }
 
     private static IntentFilter makePolarGattUpdateIntentFilter() {
@@ -191,6 +178,7 @@ public class MainActivity extends FragmentActivity {
         int usn = sharePref.getInt("usn", 0);
         Call<Result> getResult = SignoutRetrofit.getApiService().getData(usn);
 
+
         getResult.enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
@@ -202,11 +190,10 @@ public class MainActivity extends FragmentActivity {
                         case 0:
                             editor.clear();
                             editor.commit();
+                            homeFrag.deactivatePolar();
 
                             intent = new Intent(activity, SigninActivity.class);
                             activity.startActivity(intent);
-                            if (mPolarBleUpdateReceiver != null)
-                                deactivatePolar();
                             break;
                         case -1:
                             showMessage("ERROR", "Query error");

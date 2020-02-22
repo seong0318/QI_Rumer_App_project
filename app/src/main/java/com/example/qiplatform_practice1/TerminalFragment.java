@@ -29,15 +29,49 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.HashMap;
+import java.util.StringTokenizer;
+
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
+
+interface InsertUdooDataPost {
+    @FormUrlEncoded
+    @POST("/sensor/insert/udoo")
+    Call<Result> postData(@FieldMap HashMap<String, Object> param);
+}
+
+class InsertUdooDataRetrofit {
+    private static final String baseUrl = new Url().getUrl();
+
+    public static InsertUdooDataPost getApiService() {
+        return getInstance().create(InsertUdooDataPost.class);
+    }
+
+    private static Retrofit getInstance() {
+        Gson gson = new GsonBuilder().setLenient().create();
+
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+    }
+}
+
 public class TerminalFragment extends Fragment implements ServiceConnection, SerialListener {
 
-    private enum Connected { False, Pending, True }
+    private enum Connected {False, Pending, True}
 
     private String deviceAddress;
     private String newline = "\r\n";
-
     private TextView receiveText;
-
     private SerialSocket socket;
     private SerialService service;
     private boolean initialStart = true;
@@ -65,7 +99,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     @Override
     public void onStart() {
         super.onStart();
-        if(service != null)
+        if (service != null)
             service.attach(this);
         else
             getActivity().startService(new Intent(getActivity(), SerialService.class)); // prevents service destroy on unbind from recreated activity caused by orientation change
@@ -73,12 +107,13 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     @Override
     public void onStop() {
-        if(service != null && !getActivity().isChangingConfigurations())
+        if (service != null && !getActivity().isChangingConfigurations())
             service.detach();
         super.onStop();
     }
 
-    @SuppressWarnings("deprecation") // onAttach(context) was added with API 23. onAttach(activity) works for all API versions
+    @SuppressWarnings("deprecation")
+    // onAttach(context) was added with API 23. onAttach(activity) works for all API versions
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -87,14 +122,17 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     @Override
     public void onDetach() {
-        try { getActivity().unbindService(this); } catch(Exception ignored) {}
+        try {
+            getActivity().unbindService(this);
+        } catch (Exception ignored) {
+        }
         super.onDetach();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(initialStart && service !=null) {
+        if (initialStart && service != null) {
             initialStart = false;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -108,7 +146,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
         service = ((SerialService.SerialBinder) binder).getService();
-        if(initialStart && isResumed()) {
+        if (initialStart && isResumed()) {
             initialStart = false;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -155,7 +193,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         if (id == R.id.clear) {
             receiveText.setText("");
             return true;
-        } else if (id ==R.id.newline) {
+        } else if (id == R.id.newline) {
             String[] newlineNames = getResources().getStringArray(R.array.newline_names);
             final String[] newlineValues = getResources().getStringArray(R.array.newline_values);
             int pos = java.util.Arrays.asList(newlineValues).indexOf(newline);
@@ -201,12 +239,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     }
 
     private void send(String str) {
-        if(connected != Connected.True) {
+        if (connected != Connected.True) {
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             return;
         }
         try {
-            SpannableStringBuilder spn = new SpannableStringBuilder(str+'\n');
+            SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');
             spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSendText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             receiveText.append(spn);
             byte[] data = (str + newline).getBytes();
@@ -217,13 +255,37 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     }
 
     private void receive(byte[] data) {
-        receiveText.append(new String(data));
+        HashMap<String, Object> sendData = new HashMap();
+        String sensorResult = new String(data);
+        StringTokenizer tokens = new StringTokenizer(sensorResult, ",");
+        String epochTime = tokens.nextToken();
+        double temperature = Double.parseDouble(tokens.nextToken());
+        double no2 = Double.parseDouble(tokens.nextToken());
+        double o3 = Double.parseDouble(tokens.nextToken());
+        double co = Double.parseDouble(tokens.nextToken());
+        double so2 = Double.parseDouble(tokens.nextToken());
+        double pm25 = Double.parseDouble(tokens.nextToken());
+        GpsInfo gpsInfo = HomeFragment.gpsInfo;
 
-        Log.d("test",receiveText.getText().toString());
+        sendData.put("temp", temperature);
+        sendData.put("no2", no2);
+        sendData.put("o3", o3);
+        sendData.put("co", co);
+        sendData.put("so2", so2);
+        sendData.put("pm25", pm25);
+        sendData.put("lat", gpsInfo.getLatitude());
+        sendData.put("lng", gpsInfo.getLongitude());
+        sendData.put("mac", deviceAddress);
+
+        Log.d("ffffffffffffff", sendData.toString());
+
+        receiveText.append(sensorResult);
+
+        Log.d("test", receiveText.getText().toString());
     }
 
     private void status(String str) {
-        SpannableStringBuilder spn = new SpannableStringBuilder(str+'\n');
+        SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');
         spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorStatusText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         receiveText.append(spn);
     }
@@ -253,5 +315,4 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         status("connection lost: " + e.getMessage());
         disconnect();
     }
-
 }

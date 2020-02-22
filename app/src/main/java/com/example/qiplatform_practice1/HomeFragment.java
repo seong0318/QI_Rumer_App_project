@@ -70,7 +70,6 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
     private BluetoothChatService mChatService = null;
     private TextView heart;
 
-
     HomeFragment(Context context) {
         // Required empty public constructor
         this.context = context;
@@ -150,8 +149,7 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(getContext().getApplicationContext(), "Disconnect Polar sensor", Toast.LENGTH_LONG).show();
-                if (mPolarBleUpdateReceiver != null)
-                    deactivatePolar();
+                deactivatePolar();
                 dialog.dismiss();
             }
         });
@@ -164,7 +162,8 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
     }
 
     protected void deactivatePolar() {
-        getContext().unregisterReceiver(mPolarBleUpdateReceiver);
+        if (mPolarBleUpdateReceiver != null)
+            getContext().unregisterReceiver(mPolarBleUpdateReceiver);
     }
 
     private static IntentFilter makePolarGattUpdateIntentFilter() {
