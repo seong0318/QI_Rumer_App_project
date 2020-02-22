@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    tools:context=".DeviceListView">
+    android:background="#FFFFFF">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_top0"
@@ -27,6 +26,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.9"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
 
     <TextView
         android:id="@+id/tv_warning"
@@ -52,7 +58,7 @@
         app:layout_constraintTop_toTopOf="@id/gl_top0"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler1"
+        android:id="@+id/recyclerview_main_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:longClickable="true"
@@ -64,5 +70,21 @@
         android:scrollbarSize="5dp"
         android:scrollbarThumbVertical="@android:color/darker_gray"
         android:scrollbars="vertical"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        android:text="Register Sensor">
+
+        <Button
+            android:id="@+id/button_main_insert"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text="Register Sensor"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

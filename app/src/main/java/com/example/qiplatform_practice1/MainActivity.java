@@ -130,10 +130,10 @@ public class MainActivity extends FragmentActivity {
                         startActivity(intent);
                         break;
 
-                    case R.id.nav_sensor_list: // Sensor List View 버튼을 누른 경우
-                        listVIew = new Intent(getApplicationContext(), DeviceListView.class);
-                        startActivity(listVIew);
-                        break;
+//                    case R.id.nav_sensor_list: // Sensor List View 버튼을 누른 경우
+//                        listVIew = new Intent(getApplicationContext(), DeviceListView.class);
+//                        startActivity(listVIew);
+//                        break;
 
                     case R.id.nav_history:
                         Intent heart = new Intent(getApplicationContext(), History.class);

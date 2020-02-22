@@ -54,13 +54,13 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         deviceAddress = getArguments().getString("device");
     }
 
-    @Override
-    public void onDestroy() {
-        if (connected != Connected.False)
-            disconnect();
-        getActivity().stopService(new Intent(getActivity(), SerialService.class));
-        super.onDestroy();
-    }
+//    @Override
+//    public void onDestroy() {
+//        if (connected != Connected.False)
+//            disconnect();
+//        getActivity().stopService(new Intent(getActivity(), SerialService.class));
+//        super.onDestroy();
+//    }
 
     @Override
     public void onStart() {
@@ -71,12 +71,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             getActivity().startService(new Intent(getActivity(), SerialService.class)); // prevents service destroy on unbind from recreated activity caused by orientation change
     }
 
-    @Override
-    public void onStop() {
-        if(service != null && !getActivity().isChangingConfigurations())
-            service.detach();
-        super.onStop();
-    }
+//    @Override
+//    public void onStop() {
+//        if(service != null && !getActivity().isChangingConfigurations())
+//            service.detach();
+//        super.onStop();
+//    }
 
     @SuppressWarnings("deprecation") // onAttach(context) was added with API 23. onAttach(activity) works for all API versions
     @Override
@@ -85,11 +85,11 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         getActivity().bindService(new Intent(getActivity(), SerialService.class), this, Context.BIND_AUTO_CREATE);
     }
 
-    @Override
-    public void onDetach() {
-        try { getActivity().unbindService(this); } catch(Exception ignored) {}
-        super.onDetach();
-    }
+//    @Override
+//    public void onDetach() {
+//        try { getActivity().unbindService(this); } catch(Exception ignored) {}
+//        super.onDetach();
+//    }
 
     @Override
     public void onResume() {
@@ -217,9 +217,11 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     }
 
     private void receive(byte[] data) {
-        receiveText.append(new String(data));
+        String result = new String(data);
+//        receiveText.append(new String(data));
 
-        Log.d("test",receiveText.getText().toString());
+//        Log.d("test",receiveText.getText().toString());
+        Log.d("test", result);
     }
 
     private void status(String str) {

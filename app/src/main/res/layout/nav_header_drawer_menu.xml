@@ -14,8 +14,8 @@
 <!--    드로어바 수정 레이아웃-->
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
         android:contentDescription="@string/nav_header_desc"
 
         app:srcCompat="@drawable/logo" />
@@ -23,9 +23,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:paddingTop="3dp"
         android:textColor="#FFFFFF"
-        android:text="@string/nav_header_title"
+        android:text="Team A"
+        android:textSize="18dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
@@ -33,6 +34,6 @@
         android:textColor="#FFFFFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nav_header_subtitle" />
+        android:text="Steve, Liam, Veronica, Harrison" />
 
 </LinearLayout>
