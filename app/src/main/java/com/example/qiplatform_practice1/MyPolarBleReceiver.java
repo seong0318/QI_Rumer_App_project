@@ -118,13 +118,15 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
 
                             switch (execResult) {
                                 case 0:
-                                    Toast.makeText(ctx.getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(ctx.getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
                                     break;
                                 case -1:
                                     Log.e(TAG, "Sql query error");
+                                    caller.homeFrag.deactivatePolar();
                                     break;
                                 case -2:
                                     Log.e(TAG, "Duplicate primary key in polar_data table");
+                                    caller.homeFrag.deactivatePolar();
                                     break;
                                 case -3:
                                     Toast.makeText(ctx.getApplicationContext(), "Check your mac address", Toast.LENGTH_LONG).show();
@@ -132,6 +134,7 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
                                     break;
                                 default:
                                     Log.e(TAG, "Invalid access");
+                                    caller.homeFrag.deactivatePolar();
                                     break;
                             }
                         }

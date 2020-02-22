@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.FieldMap;
@@ -66,9 +68,9 @@ class InsertUdooDataRetrofit {
 }
 
 public class TerminalFragment extends Fragment implements ServiceConnection, SerialListener {
-
     private enum Connected {False, Pending, True}
 
+    private String TAG = "TerminalFragment";
     private String deviceAddress;
     private String newline = "\r\n";
     private TextView receiveText;
@@ -88,13 +90,13 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         deviceAddress = getArguments().getString("device");
     }
 
-    @Override
-    public void onDestroy() {
-        if (connected != Connected.False)
-            disconnect();
-        getActivity().stopService(new Intent(getActivity(), SerialService.class));
-        super.onDestroy();
-    }
+//    @Override
+//    public void onDestroy() {
+//        if (connected != Connected.False)
+//            disconnect();
+//        getActivity().stopService(new Intent(getActivity(), SerialService.class));
+//        super.onDestroy();
+//    }
 
     @Override
     public void onStart() {
@@ -105,12 +107,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             getActivity().startService(new Intent(getActivity(), SerialService.class)); // prevents service destroy on unbind from recreated activity caused by orientation change
     }
 
-    @Override
-    public void onStop() {
-        if (service != null && !getActivity().isChangingConfigurations())
-            service.detach();
-        super.onStop();
-    }
+//    @Override
+//    public void onStop() {
+//        if (service != null && !getActivity().isChangingConfigurations())
+//            service.detach();
+//        super.onStop();
+//    }
 
     @SuppressWarnings("deprecation")
     // onAttach(context) was added with API 23. onAttach(activity) works for all API versions
@@ -120,14 +122,14 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         getActivity().bindService(new Intent(getActivity(), SerialService.class), this, Context.BIND_AUTO_CREATE);
     }
 
-    @Override
-    public void onDetach() {
-        try {
-            getActivity().unbindService(this);
-        } catch (Exception ignored) {
-        }
-        super.onDetach();
-    }
+//    @Override
+//    public void onDetach() {
+//        try {
+//            getActivity().unbindService(this);
+//        } catch (Exception ignored) {
+//        }
+//        super.onDetach();
+//    }
 
     @Override
     public void onResume() {
@@ -256,6 +258,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     private void receive(byte[] data) {
         HashMap<String, Object> sendData = new HashMap();
+        Call<Result> getResult;
         String sensorResult = new String(data);
         StringTokenizer tokens = new StringTokenizer(sensorResult, ",");
         String epochTime = tokens.nextToken();
@@ -277,7 +280,44 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         sendData.put("lng", gpsInfo.getLongitude());
         sendData.put("mac", deviceAddress);
 
-        Log.d("ffffffffffffff", sendData.toString());
+        getResult = InsertUdooDataRetrofit.getApiService().postData(sendData);
+        getResult.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                if (response.isSuccessful()) {
+                    int execResult = response.body().getResult();
+
+                    Toast.makeText(getContext().getApplicationContext(), "execResult: " + execResult, Toast.LENGTH_LONG).show();
+
+//                    switch (execResult) {
+//                        case 0:
+//                            Toast.makeText(getContext().getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
+//                            break;
+//                        case -1:
+//                            Log.e(TAG, "Sql query error");
+//                            onDestroy();
+//                            break;
+//                        case -2:
+//                            Log.e(TAG, "Duplicate primary key in polar_data table");
+//                            onDestroy();
+//                            break;
+//                        case -3:
+//                            Toast.makeText(getContext().getApplicationContext(), "Check your mac address", Toast.LENGTH_LONG).show();
+//                            onDestroy();
+//                            break;
+//                        default:
+//                            Log.e(TAG, "Invalid access");
+//                            onDestroy();
+//                            break;
+//                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+
+            }
+        });
 
         receiveText.append(sensorResult);
 
