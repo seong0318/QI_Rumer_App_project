@@ -1,79 +1,102 @@
 package com.example.qiplatform_practice1;
 
+
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import android.os.Bundle;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
-
-
-import java.util.Arrays;
-import java.util.List;
 
 public class SensorRegistration extends AppCompatActivity {
-
-    private RecyclerAdapter adapter;
+    final String TAG = "SensorRegistration";
+    int REQUEST_ENABLE_BT = 1;
+    private BluetoothAdapter myBluetoothAdapter;
+    private ArrayList<Dictionary> mArrayList;
+    private CustomAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    TextView asdfasdf;
+    private String deviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_reg);
+        myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        bluetoothPairing();
 
-        init();
+        mRecyclerView = findViewById(R.id.recyclerview_main_list);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(SensorRegistration.this);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        getData();
+        mArrayList = new ArrayList<>();
+
+        mAdapter = new CustomAdapter(mArrayList);
+        mRecyclerView.setAdapter(mAdapter);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                mLinearLayoutManager.getOrientation());
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+        Button buttonInsert = (Button) findViewById(R.id.devicereg_btn);
+        buttonInsert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StringTokenizer tokens = new StringTokenizer(deviceInfo, "\n");
+                String deviceName = tokens.nextToken();
+                String deviceAddr = tokens.nextToken();
+
+                Dictionary data = new Dictionary(deviceName, deviceAddr);
+
+                //mArrayList.add(0, dict); //RecyclerView의 첫 줄에 삽입
+                mArrayList.add(data); // RecyclerView의 마지막 줄에 삽입
+
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
-    private void init() {
-        RecyclerView recyclerView = findViewById(R.id.recycler1);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        adapter = new RecyclerAdapter();
-        recyclerView.setAdapter(adapter);
+    private void bluetoothPairing() {
+        Button bt_pairing = findViewById(R.id.pairedlist_btn);
+        bt_pairing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //1.블루투스가 활성화 되어 있어야 한다.
+                //2.새로운 액티비티를 열어서 페어링된 기기 목록을 보여 준다. 리스트뷰 사용함
+                //3.새로운 액티비티에서 기기를 연결한다.
+                //4.새로운 액티비티를 닫는다. 원하는 기기와의 연결확인.
+                //이미 페어링된 기기가 없으면 새로 기기를 검색해야 한다. 여기서는 다루지 않는다.
+                //즉, 다른 기기를 검색하고 페어링하는 단계는 폰의 내장된 블루투스 메뉴에서 하라는 말이다.
+                if (myBluetoothAdapter.isEnabled()) {
+                    //새로운 액티비티를 연다.
+                    Intent pairingIntent = new Intent(SensorRegistration.this, PairingListView.class);
+                    startActivityForResult(pairingIntent, REQUEST_ENABLE_BT);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Activate the Bluetooth,first.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
-    private void getData() {
-        // 임의의 데이터입니다.
-        List<String> listTitle = Arrays.asList("국화", "사막", "수국", "해파리", "코알라", "등대", "펭귄", "튤립",
-                "국화", "사막", "수국", "해파리", "코알라", "등대", "펭귄", "튤립");
-        List<String> listContent = Arrays.asList(
-                "이 꽃은 국화입니다.",
-                "여기는 사막입니다.",
-                "이 꽃은 수국입니다.",
-                "이 동물은 해파리입니다.",
-                "이 동물은 코알라입니다.",
-                "이것은 등대입니다.",
-                "이 동물은 펭귄입니다.",
-                "이 꽃은 튤립입니다.",
-                "이 꽃은 국화입니다.",
-                "여기는 사막입니다.",
-                "이 꽃은 수국입니다.",
-                "이 동물은 해파리입니다.",
-                "이 동물은 코알라입니다.",
-                "이것은 등대입니다.",
-                "이 동물은 펭귄입니다.",
-                "이 꽃은 튤립입니다."
-        );
-        List<Integer> listResId = Arrays.asList();
-        for (int i = 0; i < listTitle.size(); i++) {
-            // 각 List의 값들을 data 객체에 set 해줍니다.
-            Data data = new Data();
-            data.setTitle(listTitle.get(i));
-            data.setContent(listContent.get(i));
-            data.setResId(listResId.get(i));
 
-            // 각 값이 들어간 data를 adapter에 추가합니다.
-          adapter.addItem(data);
-        }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        deviceInfo = data.getStringExtra("result_msg");
+        asdfasdf = findViewById(R.id.asdfasdf);
 
-        // adapter의 값이 변경되었다는 것을 알려줍니다.
-        adapter.notifyDataSetChanged();
+        asdfasdf.setText(deviceInfo);
     }
-
 }

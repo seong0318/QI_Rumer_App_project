@@ -24,7 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SensorReg"></activity>
+        <activity android:name=".PairingListView"
+            android:screenOrientation="portrait"
+            android:theme="@style/popupTheme"></activity>
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -32,7 +34,7 @@
 
         <activity android:name=".History" />
         <activity android:name=".Udoactivity" />
-        <activity android:name=".SensorRegistration"></activity>
+        <activity android:name=".SensorRegistration" />
 
         <service android:name=".SerialService" />
 
@@ -41,8 +43,6 @@
         <activity android:name=".Usermanagement" />
         <activity android:name=".AQI_index" />
         <activity android:name=".Constants" />
-        <activity android:name=".DeviceListActivity" />
-        <activity android:name=".DeviceListView" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

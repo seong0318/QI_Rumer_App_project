@@ -34,7 +34,7 @@ public class DevicesFragment extends ListFragment {
         if(getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH))
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         listAdapter = new ArrayAdapter<BluetoothDevice>(getActivity(), 0, listItems) {
-            @Override
+                @Override
             public View getView(int position, View view, ViewGroup parent) {
                 BluetoothDevice device = listItems.get(position);
                 if (view == null)
