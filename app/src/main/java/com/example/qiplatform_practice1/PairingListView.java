@@ -88,4 +88,9 @@ public class PairingListView extends AppCompatActivity {
         }
         return true;
     }
+
+    @Override
+    public void onBackPressed() { //back 버튼 차단
+        return;
+    }
 }

@@ -179,12 +179,7 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        no2 = view.findViewById(R.id.tv_no2_data);
-        o3 = view.findViewById(R.id.tv_o3_data);
-        co = view.findViewById(R.id.tv_co_data);
-        so2 = view.findViewById(R.id.tv_so2_data);
-        temp = view.findViewById(R.id.tv_temp_data);
-        pm = view.findViewById(R.id.tv_pm_data);
+
         status = view.findViewById(R.id.tv_status);
     }
 

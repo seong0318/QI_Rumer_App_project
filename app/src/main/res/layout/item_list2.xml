@@ -22,7 +22,7 @@
                 android:id="@+id/sensortype_img"
                 android:layout_width="0dp"
                 android:padding="7dp"
-                android:src="@drawable/heart"
+                android:src="@drawable/ic_aqi_history"
                 android:layout_height="68dp"
                 android:layout_weight="20"
                 android:gravity="center"

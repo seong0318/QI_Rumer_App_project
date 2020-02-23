@@ -1,10 +1,10 @@
 package com.example.qiplatform_practice1;
 
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +20,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView sensorid;
         protected TextView macaddress;
+        protected Button delete_btn;
 
 
 
@@ -27,6 +28,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             super(view);
             this.sensorid = (TextView) view.findViewById(R.id.sensorid_txt);
             this.macaddress = (TextView) view.findViewById(R.id.mac_txt);
+            this.delete_btn = view.findViewById(R.id.delete_btn);
 //            this.korean = (TextView) view.findViewById(R.id.korean_listitem);
 
 
@@ -57,14 +59,22 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
 
     @Override
-    public void onBindViewHolder(@NonNull CustomViewHolder viewholder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder viewholder, final int position) {
+
+        viewholder.delete_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mList.remove(position);
+                notifyDataSetChanged();
+            }
+        });
 
         viewholder.sensorid.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
         viewholder.macaddress.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 //        viewholder.korean.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 
-        viewholder.sensorid.setGravity(Gravity.CENTER);
-        viewholder.macaddress.setGravity(Gravity.CENTER);
+//        viewholder.sensorid.setGravity(Gravity.CENTER);
+//        viewholder.macaddress.setGravity(Gravity.CENTER);
 //        viewholder.korean.setGravity(Gravity.CENTER);
 
 
