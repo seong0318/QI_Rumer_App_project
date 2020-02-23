@@ -1,88 +1,284 @@
 package com.example.qiplatform_practice1;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
-
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import androidx.drawerlayout.widget.DrawerLayout;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+interface SignoutGet {
+    @GET("/signout/1")
+    Call<Result> getData(@Query("usn") int usn);
+}
 
-import android.view.Menu;
-import android.os.Bundle;
+class SignoutRetrofit {
+    private static final String baseUrl = new Url().getUrl();
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+    public static SignoutGet getApiService() {
+        return getInstance().create(SignoutGet.class);
+    }
 
+    private static Retrofit getInstance() {
+        Gson gson = new GsonBuilder().setLenient().create();
 
-public class MainActivity extends AppCompatActivity {
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+    }
+}
 
-    private AppBarConfiguration mAppBarConfiguration;
-    private GoogleMap mMap;
+public class MainActivity extends FragmentActivity {
+    private MyPolarBleReceiver mPolarBleUpdateReceiver;
+    private ImageButton menu, ib_bluetooth;
+    private DrawerLayout drawer;
+    private NavigationView nav;
+    private Activity activity = null;
+    private Intent pwchange, main, listVIew, home;
+
+    private static MainActivity ins;
+
+    HomeFragment homeFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ins = this;
+        activity = this;
+
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        locationPermissionCheck();
+        if (savedInstanceState == null) {
+            homeFrag = new HomeFragment(MainActivity.this);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_drawer_menu, homeFrag);
+            transaction.commit();
+        }
+        drawer = findViewById(R.id.drawer_layout);
+        ib_bluetooth = findViewById(R.id.ib_bluetooth);
+
+        nav = findViewById(R.id.nav_view);
+        TextView heart = findViewById(R.id.tv_heart);
+        menu = findViewById(R.id.ib_menu);
+        menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                drawer.openDrawer(GravityCompat.START);
             }
         });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send)
-                .setDrawerLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+
+        ib_bluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent itent = new Intent(MainActivity.this, Udoactivity.class);
+                startActivity(itent);
+            }
+        });
+
+        nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_user_management: // 비밀번호 변경 버튼을 누른 경우
+                        pwchange = new Intent(getApplicationContext(), Usermanagement.class);
+                        startActivity(pwchange);
+                        break;
+
+                    case R.id.nav_sign_out: // 로그아웃 버튼을 누른 경우
+                        signOutAction();
+                        break;
+
+                    case R.id.nav_sensor_regi: // Sensor Registration 메뉴를 누른 경우
+                        Intent intent = new Intent(getApplicationContext(), SensorRegistration.class);
+                        startActivity(intent);
+                        break;
+
+//                    case R.id.nav_sensor_list: // Sensor List View 버튼을 누른 경우
+//                        listVIew = new Intent(getApplicationContext(), DeviceListView.class);
+//                        startActivity(listVIew);
+//                        break;
+
+                    case R.id.nav_history:
+                        Intent heart = new Intent(getApplicationContext(), History.class);
+                        startActivity(heart);
+                        break;
+
+
+                    case R.id.nav_aqi_index:
+                        Intent aqiidx = new Intent(getApplicationContext(), AQI_index.class);
+                        startActivity(aqiidx);
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    public static MainActivity getInstace() {
+        return ins;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        deactivatePolar();
+    }
+
+    public void displayHR(int hr) {
+        //display on the textview
+        Log.e(this.getClass().getName(), "displayHR(): " + hr);
+        homeFrag.displayHR(hr);
 
     }
 
+    protected void activatePolar() {
+        registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
+        mPolarBleUpdateReceiver.setCaller(this);
+    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    protected void deactivatePolar() {
+        unregisterReceiver(mPolarBleUpdateReceiver);
+    }
+
+    private static IntentFilter makePolarGattUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
+        return intentFilter;
+    }
+
+    public void signOutAction() {
+        SharedPreferences sharePref = getSharedPreferences("SHARE_PREF", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharePref.edit();
+        int usn = sharePref.getInt("usn", 0);
+        Call<Result> getResult = SignoutRetrofit.getApiService().getData(usn);
+
+        getResult.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                if (response.isSuccessful()) {
+                    int execResult = response.body().getResult();
+                    Intent intent;
+
+                    switch (execResult) {
+                        case 0:
+                            editor.clear();
+                            editor.commit();
+
+                            intent = new Intent(activity, SigninActivity.class);
+                            activity.startActivity(intent);
+                            if (mPolarBleUpdateReceiver != null)
+                                deactivatePolar();
+                            break;
+                        case -1:
+                            showMessage("ERROR", "Query error");
+                            break;
+                        case -2:
+                            showMessage("NOTICE", "This account is already signed out");
+                            break;
+                        case -3:
+                            showMessage("ERROR", "Update query error");
+                            break;
+                        case -4:
+                            showFailMessage("NOTICE", "Please sign in first");
+                            break;
+                        default:
+                            showMessage("ERROR", "Invalid access: " + execResult);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                Log.e("ERROR", "username duplicate check retrofit error" + t.getMessage());
+            }
+        });
+    }
+
+    public void showFailMessage(String title, String message) {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(activity, SigninActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void showMessage(String title, String message) {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
-    @Override
-    public void onBackPressed() { //back 버튼 차단
-        return;
+    public void locationPermissionCheck() {
+        if (Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
+        }
     }
 }

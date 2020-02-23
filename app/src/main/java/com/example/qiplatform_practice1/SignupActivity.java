@@ -1,87 +1,75 @@
 package com.example.qiplatform_practice1;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+
 import android.view.View;
+import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.qiplatform_practice1.Url;
-import com.example.qiplatform_practice1.URLConnector;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-class checkDuplicate {
-    private final String isDup;
 
-    public checkDuplicate(String isDup) {
-        this.isDup = isDup;
-    }
-
-    public String getIsDup() {
-        return isDup;
-    }
+interface UsernameCheckGet {
+    @GET("/usernamecheck")
+    Call<Result> getData(@Query("user_name") String username);
 }
 
-class SignupData {
-    private final String username;
-    private final String email;
-    private final String pwd;
-    private final String confirm_pwd;
-
-    public SignupData(String username, String email, String pwd, String confirm_pwd) {
-        this.username = username;
-        this.email = email;
-        this.pwd = pwd;
-        this.confirm_pwd = confirm_pwd;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public String getConfirm_pwd() {
-        return confirm_pwd;
-    }
-}
-
-interface RetrofitExService {
-    String url = new Url().getUrl();
-
-    @GET("/usernamecheck/1")
-    Call<Object> getData(@Query("user_name") String username);
-}
-
-class RetrofitClient {
+class UsernameCheckRetrofit {
     private static final String baseUrl = new Url().getUrl();
 
-    public static RetrofitExService getApiService() {
-        return getInstance().create(RetrofitExService.class);
+    public static UsernameCheckGet getApiService() {
+        return getInstance().create(UsernameCheckGet.class);
+    }
+
+    private static Retrofit getInstance() {
+        Gson gson = new GsonBuilder().setLenient().create();
+
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+    }
+}
+
+interface SignupPost {
+    @FormUrlEncoded
+    @POST("/signuphandle")
+    Call<Result> postData(@FieldMap HashMap<String, Object> param);
+}
+
+class SignupRetrofit {
+    private static final String baseUrl = new Url().getUrl();
+
+    public static SignupPost getApiService() {
+        return getInstance().create(SignupPost.class);
     }
 
     private static Retrofit getInstance() {
@@ -95,116 +83,171 @@ class RetrofitClient {
 }
 
 public class SignupActivity extends AppCompatActivity implements Button.OnClickListener {
-    private Url url = new Url();
+    private Activity activity = null;
 
-    public String getUrl() {
-        return url.getUrl();
-    }
-
-    //    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_signup);
-//
-//        checkid_btn = findViewById(R.id.checkid_btn);
-//        signinhere = findViewById(R.id.gosignin_txt);
-//        usn_edttxt = findViewById(R.id.usn_edttxt);
-//        signup_btn = findViewById(R.id.signup_btn);
-//
-////        Url url = new Url();
-////        URLConnector task = new URLConnector(url + "signup");
-////
-////        task.start();
-////
-////        try {
-////            task.join();
-////            System.out.println("waiting...");
-////        } catch (InterruptedException e) {
-////            System.out.println(e);
-////        }
-////
-////        String result = task.getResult();
-////        System.out.println(result);
-//
-//        checkid_btn.setOnClickListener(new View.OnClickListener() {
-//            Url url = new Url();
-//            URLConnector task = new URLConnector(url + "signup");
-//
-//            task.start();
-//
-//            try {
-//                task.join();
-//                System.out.println("waiting...");
-//            } catch (InterruptedException e) {
-//                System.out.println(e);
-//            }
-//
-//            String result = task.getResult();
-//            System.out.println(result);
-//        });
-//
-//        signinhere.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent intent = new Intent(SignupActivity.this, SigninActivity.class);
-//
-//                startActivityForResult(intent, 1);
-//
-//                String username = usn_edttxt.getText().toString();
-//
-//                return;
-//
-//            }
-//        });
-//
-//        signup_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(SignupActivity.this, VerifyPopupActivity.class);
-//                startActivityForResult(intent, 1);
-//                return;
-//
-//            }
-//        });
-//    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        activity = this;
 
         Button checkIdBtn = (Button) findViewById(R.id.checkid_btn);
         checkIdBtn.setOnClickListener((View.OnClickListener) this);
-        Button signupBtn = (Button) findViewById(R.id.signup_btn);
+        final Button signupBtn = (Button) findViewById(R.id.signup_btn);
         signupBtn.setOnClickListener((View.OnClickListener) this);
+
+        final EditText pwdText = (EditText) findViewById(R.id.pwd_edttxt);
+        final EditText pwdConfirmText = (EditText) findViewById(R.id.pwd_confirm_edttxt);
+
+        pwdConfirmText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (pwdText.getText().toString().equals(pwdConfirmText.getText().toString()))
+                    signupBtn.setEnabled(true);
+                else
+                    signupBtn.setEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     @Override
-    public void onClick(View view) {
-        TextView usernameText = (TextView) findViewById(R.id.usn_edttxt);
+    public void onClick(final View view) {
+        final TextView usernameText = (TextView) findViewById(R.id.usn_edttxt);
+        TextView emailText = (TextView) findViewById(R.id.email_edttxt);
+        TextView pwdText = (TextView) findViewById(R.id.pwd_edttxt);
+        String username, email, pwd;
+
         switch (view.getId()) {
             case R.id.checkid_btn:
-                final String username = usernameText.getText().toString();
-                Call<Object> getResult = RetrofitClient.getApiService().getData(username);
-                getResult.enqueue(new Callback<Object>() {
-                    @Override
-                    public void onResponse(Call<Object> call, Response<Object> response) {
-                        if (response.isSuccessful()) {
-                            System.out.println("username: " + username);
-                            System.out.println("data: " + response.body());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Object> call, Throwable t) {
-                        Log.e("ERROR", "retrofit error");
-                    }
-                });
-
+                username = usernameText.getText().toString();
+                checkUsernameAction(username, view, usernameText);
                 break;
             case R.id.signup_btn:
-                System.out.println("2");
+                username = usernameText.getText().toString();
+                email = emailText.getText().toString();
+                pwd = pwdText.getText().toString();
+
+                signUpAction(username, email, pwd);
                 break;
         }
+    }
+
+    public void checkUsernameAction(String username, final View view, final TextView usernameText) {
+        Call<Result> getResult;
+        getResult = UsernameCheckRetrofit.getApiService().getData(username);
+        getResult.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                if (response.isSuccessful()) {//
+                    int execResult = response.body().getResult();
+
+                    if (execResult == 0) {
+                        showMessage("Usable username", "Please continue");
+
+                        Button button = (Button) findViewById(view.getId());
+                        button.setEnabled(false);
+                        usernameText.setEnabled(false);
+                    } else if (execResult < 0) {
+                        showMessage("ERROR", "Query error");
+                    } else {
+                        showMessage("Duplicate username", "Please enter username again");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                Log.e("ERROR", "username duplicate check retrofit error" + t.getMessage());
+            }
+        });
+    }
+
+    public void signUpAction(String username, String email, String pwd) {
+        HashMap<String, Object> formData;
+        Call<Result> getResult;
+
+        if (findViewById(R.id.checkid_btn).isEnabled()) {
+            showMessage("Notice", "Please check id duplication first");
+            return;
+        }
+
+        formData = new HashMap();
+        formData.put("user_name", username);
+        formData.put("email", email);
+        formData.put("pwd", pwd);
+
+        getResult = SignupRetrofit.getApiService().postData(formData);
+        getResult.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                if (response.isSuccessful()) {
+                    int execResult = response.body().getResult();
+//
+                    switch (execResult) {
+                        case 0:
+                            showSuccessMessage("Successful Registration", "Please complete the account verification in the email provided.");
+                            break;
+                        case -1:
+                            showMessage("ERROR", "Store user Query error");
+                            break;
+                        case -2:
+                            showMessage("ERROR", "Store temp_user Query error");
+                            break;
+                        case -4:
+                            showMessage("ERROR", "Send mail error");
+                            break;
+                        default:
+                            showMessage("ERROR", "Invalid access " + execResult);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                Log.e("ERROR", "sign up retrofit error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void showMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void showSuccessMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(activity, SigninActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

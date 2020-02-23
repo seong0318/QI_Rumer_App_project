@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AQI_index">
+
+    <LinearLayout
+        android:id="@+id/top_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingTop="4dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shrinkColumns="*"
+            android:stretchColumns="*">
+
+
+
+            <TableRow
+
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border0"
+                    android:text="(AQI) Values"
+                    android:textAlignment="center"
+                    android:textSize="17dp"
+                    android:textColor="@color/login_form_details" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border0"
+                    android:text="Concern"
+                    android:textSize="17dp"
+
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border0"
+                    android:text="Colors"
+                    android:textSize="17dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border1"
+                    android:text="0 to 50"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details_dark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border1"
+                    android:text="Good"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details_dark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border1"
+                    android:text="Green"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details_dark" />
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border2"
+                    android:text="51 to 100"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details_dark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border2"
+                    android:text="Moderate"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details_dark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border2"
+                    android:text="Yellow"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details_dark" />
+
+            </TableRow>
+
+            <TableRow>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border3"
+                    android:text="101 to 150"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details_dark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border3"
+                    android:text="Unhealthy for"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details_dark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border3"
+                    android:text="Orange"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details_dark" />
+
+
+            </TableRow>
+
+
+
+
+
+            <TableRow>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border4"
+                    android:text="151 to 200"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border4"
+                    android:text="Unhealthy"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border4"
+                    android:text="Red"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border5"
+                    android:text="201 to 300"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border5"
+                    android:text="Very Unhealthy"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border5"
+                    android:text="Purple"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+
+            </TableRow>
+
+            <TableRow>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border6"
+                    android:text="301 to 500"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border6"
+                    android:text="Hazardous"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aqi_table_border6"
+                    android:text="Maroon"
+                    android:textAlignment="center"
+                    android:textColor="@color/login_form_details" />
+
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/middle_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top_linear"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/details"
+            android:layout_width="match_parent"
+            android:layout_height="209dp"
+            android:padding="15dp"
+            android:textColor="#000000"
+            android:text="- The United States Environmental Protection Agency (EPA) has developed an Air Quality Index that is used to report air quality.\n\n- This AQI is divided into six categories indicating increasing levels of health concern.\n\n- An AQI value over 300 represents hazardous air quality and below 50 the air quality is good\n\n"
+            android:textSize="15dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/middle_linear"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/details_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="Details : "
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/details_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp"
+            android:text="@string/aqi_index_wiki"
+            android:textSize="15dp" />
+    </LinearLayout>
+</RelativeLayout>

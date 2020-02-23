@@ -1,0 +1,133 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/tonedown"
+    android:orientation="horizontal"
+    android:weightSum="100">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="10">
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="80"
+        android:orientation="vertical"
+        android:weightSum="100">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="97"
+            android:weightSum="4"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/logo">
+
+            </ImageView>
+
+            <ImageView
+                android:layout_width="125dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/id_cancellation">
+
+
+            </ImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                android:gravity="center"
+                android:text="Are you leaving?"
+                android:textColor="#FFFFFF"
+                android:textSize="23dp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+
+                android:gravity="center_horizontal"
+                android:text="We need to confirm your password \n for your ID cancellation"
+                android:textColor="#FFFFFF"
+                android:textSize="14dp">
+
+            </TextView>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"/>
+            <EditText
+                android:id="@+id/pwd_edttxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:hint="Password"
+                android:scrollHorizontally="false"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#e6e6e6"
+                android:textSize="18dp"
+                android:inputType="textPassword"
+                android:theme="@style/EditTheme">
+
+            </EditText>
+
+
+
+            <Button
+                android:id="@+id/idcancellation_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/white_something"
+                android:gravity="center"
+                android:text="Confirm"
+                android:textColor="#FFFFFF"
+                android:textSize="15dp"></Button>
+
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="10">
+
+
+    </LinearLayout>
+
+</LinearLayout>

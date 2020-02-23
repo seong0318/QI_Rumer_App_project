@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/tonedown"
+    android:orientation="horizontal"
     android:weightSum="100">
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -16,8 +18,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="80"
-        android:weightSum="100"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="100">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,8 +31,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="78"
             android:layout_gravity="center_horizontal"
+            android:layout_weight="78"
             android:orientation="vertical">
 
 
@@ -45,8 +47,8 @@
             <ImageView
                 android:layout_width="125dp"
                 android:layout_height="111dp"
-                android:layout_marginTop="20dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/forgot">
 
 
@@ -55,12 +57,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                android:gravity="center"
                 android:text="Forgot Your PassWord?"
                 android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_marginTop="17dp"
                 android:textSize="24dp"
-                android:gravity="center">
+                android:textStyle="bold">
 
             </TextView>
 
@@ -69,7 +71,7 @@
                 android:layout_height="36dp"
                 android:layout_marginTop="8dp"
                 android:gravity="center_horizontal"
-                android:text="We just need your registered Email \nto send you password reset instructions"
+                android:text="We need your Username to send \ntemp-password to your Email address"
                 android:textColor="#FFFFFF"
                 android:textSize="14dp">
 
@@ -77,42 +79,42 @@
 
 
             <EditText
+                android:id="@+id/username_edttxt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
-                android:hint="E-mail"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#555050"
-                android:textSize="18dp"
+                android:hint="Username"
                 android:scrollHorizontally="false"
                 android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#bfb6b6"
+                android:textSize="18dp"
                 android:theme="@style/EditTheme">
 
             </EditText>
 
-
             <Button
+                android:id="@+id/sendemail_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="20dp"
-                android:textSize="15dp"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/white_something"
-                android:id="@+id/sendemail_btn"
                 android:gravity="center"
                 android:text="Send E-mail"
-                android:textColor="#FFFFFF"></Button>
+                android:textColor="#FFFFFF"
+                android:textSize="15dp"></Button>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="70dp"
-                >
+                android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -121,14 +123,15 @@
                     android:textSize="14dp">
 
                 </TextView>
+
                 <TextView
-                    android:layout_width="wrap_content"
                     android:id="@+id/fgsignup_txt"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:text="  Sign up!"
-                    android:textSize="16dp"
                     android:textColor="#FFFFFF"
+                    android:textSize="16dp"
                     android:textStyle="bold">
 
                 </TextView>
@@ -139,14 +142,8 @@
         </LinearLayout>
 
 
-
-
-
-
-
-
-
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"

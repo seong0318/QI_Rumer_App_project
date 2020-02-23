@@ -1,7 +1,5 @@
 package com.example.qiplatform_practice1;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -10,11 +8,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.qiplatform_practice1.ui.home.HomeFragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PopupActivity extends AppCompatActivity {
 
-    Button   thankyou_btn;
+    Button thankyou_btn;
     TextView getid_txt;
 
     @Override
@@ -26,14 +24,14 @@ public class PopupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signinpopup);
 
 
-        getid_txt    = findViewById(R.id.getid_txt);
+        getid_txt = findViewById(R.id.getid_txt);
         thankyou_btn = findViewById(R.id.thankyou_btn);
 
 
         thankyou_btn.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                Intent intent = new Intent(PopupActivity.this , MainActivity.class);
+                                                Intent intent = new Intent(PopupActivity.this, MainActivity.class);
                                                 startActivity(intent);
                                             }
                                         }
@@ -45,16 +43,14 @@ public class PopupActivity extends AppCompatActivity {
         String username = bundle.getString("username");
         String password = bundle.getString("password");
 
-        getid_txt.setText("Welcome, "+ username + " !");
-
-
+        getid_txt.setText("Welcome, " + username + " !");
 
 
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) { //바깥레이어 클릭시 안닫히게 하는 기능
-        if(event.getAction()==MotionEvent.ACTION_OUTSIDE){
+        if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
             return false;
 
         }
