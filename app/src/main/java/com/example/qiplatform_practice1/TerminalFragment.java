@@ -265,7 +265,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
                    switch (execResult) {
                        case 0:
-                           Toast.makeText(getContext().getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
                            break;
                        case -1:
                            Log.e(TAG, "Sql query error");

@@ -3,7 +3,6 @@ package com.example.qiplatform_practice1;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -130,7 +129,8 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
                                     break;
                                 case -3:
                                     Toast.makeText(ctx.getApplicationContext(), "Check your mac address", Toast.LENGTH_LONG).show();
-                                    caller.homeFrag.deactivatePolar();
+                                    if (caller.homeFrag != null)
+                                        caller.homeFrag.deactivatePolar();
                                     break;
                                 default:
                                     Log.e(TAG, "Invalid access");
