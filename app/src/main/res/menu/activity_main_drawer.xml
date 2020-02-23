@@ -27,13 +27,10 @@
         <menu>
             <item
                 android:id="@+id/nav_sensor_regi"
-                android:icon="@drawable/ic_register"
-                android:title="Sensor Registration" />
-
-            <item
-                android:id="@+id/nav_sensor_list"
                 android:icon="@drawable/ic_list"
-                android:title="Sensor List View" />
+                android:title="Sensor Management" />
+
+
 
             <item
                 android:id="@+id/nav_history"

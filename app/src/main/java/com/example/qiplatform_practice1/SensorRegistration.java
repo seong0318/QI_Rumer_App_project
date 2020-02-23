@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -85,8 +86,9 @@ public class SensorRegistration extends AppCompatActivity {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        Button buttonInsert = (Button) findViewById(R.id.devicereg_btn);
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
+        Button hrreg_btn = (Button) findViewById(R.id.hrreg_btn);
+        Button aqireg_btn = findViewById(R.id.aqireg_btn);
+        hrreg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 StringTokenizer tokens = new StringTokenizer(deviceInfo, "\n");
@@ -98,6 +100,7 @@ public class SensorRegistration extends AppCompatActivity {
             }
         });
     }
+
 
     private void bluetoothPairing() {
         Button bt_pairing = findViewById(R.id.pairedlist_btn);
@@ -175,5 +178,12 @@ public class SensorRegistration extends AppCompatActivity {
                 Log.e("ERROR", "SensorRegistration retrofit error: " + t.getMessage());
             }
         });
+    }
+
+
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

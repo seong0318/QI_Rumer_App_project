@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.71" />
 
     <TextView
         android:id="@+id/tv_warning"
@@ -73,31 +73,66 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:weightSum="100"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="@id/gl_left"
         app:layout_constraintEnd_toEndOf="@id/gl_right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline"
         android:text="Register Sensor">
 
-        <Button
-            android:id="@+id/devicereg_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="Register Sensor"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/hrreg_btn"
+                android:layout_width="0dp"
+                android:textColor="#FFFFFF"
+                android:textSize="18dp"
+                android:layout_weight="50"
+                android:layout_height="50dp"
+                android:text="Register HR"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/orange_corner"/>
+
+            <Button
+                android:id="@+id/aqireg_btn"
+                android:textColor="#FFFFFF"
+                android:layout_width="0dp"
+                android:textSize="18dp"
+                android:layout_weight="50"
+                android:layout_marginLeft="10dp"
+                android:layout_height="50dp"
+                android:text="Register AQI"
+                android:background="@drawable/orange_corner"/>
+
+        </LinearLayout>
         <Button
             android:id="@+id/pairedlist_btn"
-            android:layout_width="50dp"
+            android:textColor="#FFFFFF"
+            android:layout_width="120dp"
+            android:layout_marginTop="20dp"
             android:layout_height="50dp"
-            android:text="Register Sensor"/>
+            android:textSize="18dp"
+            android:text="Select"
+            android:layout_gravity="center"
+            android:background="@drawable/orange_corner">
+
+        </Button>
 
         <TextView
-            android:layout_width="200dp"
-            android:layout_height="30dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:id="@+id/asdfasdf">
 
         </TextView>
 
+
     </LinearLayout>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
