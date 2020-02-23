@@ -57,12 +57,12 @@ public class SerialService extends Service implements SerialListener {
         queue2 = new LinkedList<>();
     }
 
-    @Override
-    public void onDestroy() {
-        cancelNotification();
-        disconnect();
-        super.onDestroy();
-    }
+//    @Override
+//    public void onDestroy() {
+//        cancelNotification();
+//        disconnect();
+//        super.onDestroy();
+//    }
 
     @Nullable
     @Override
@@ -116,14 +116,14 @@ public class SerialService extends Service implements SerialListener {
         queue2.clear();
     }
 
-    public void detach() {
-        if(connected)
-            createNotification();
-        // items already in event queue (posted before detach() to mainLooper) will end up in queue1
-        // items occurring later, will be moved directly to queue2
-        // detach() and mainLooper.post run in the main thread, so all items are caught
-        listener = null;
-    }
+        public void detach() {
+            if(connected)
+                createNotification();
+            // items already in event queue (posted before detach() to mainLooper) will end up in queue1
+            // items occurring later, will be moved directly to queue2
+            // detach() and mainLooper.post run in the main thread, so all items are caught
+            listener = null;
+        }
 
     private void createNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -89,15 +89,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         setRetainInstance(true);
         deviceAddress = getArguments().getString("device");
     }
-
-//    @Override
-//    public void onDestroy() {
-//        if (connected != Connected.False)
-//            disconnect();
-//        getActivity().stopService(new Intent(getActivity(), SerialService.class));
-//        super.onDestroy();
-//    }
-
+  
     @Override
     public void onStart() {
         super.onStart();
@@ -107,13 +99,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             getActivity().startService(new Intent(getActivity(), SerialService.class)); // prevents service destroy on unbind from recreated activity caused by orientation change
     }
 
-//    @Override
-//    public void onStop() {
-//        if (service != null && !getActivity().isChangingConfigurations())
-//            service.detach();
-//        super.onStop();
-//    }
-
     @SuppressWarnings("deprecation")
     // onAttach(context) was added with API 23. onAttach(activity) works for all API versions
     @Override
@@ -121,15 +106,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         super.onAttach(activity);
         getActivity().bindService(new Intent(getActivity(), SerialService.class), this, Context.BIND_AUTO_CREATE);
     }
-
-//    @Override
-//    public void onDetach() {
-//        try {
-//            getActivity().unbindService(this);
-//        } catch (Exception ignored) {
-//        }
-//        super.onDetach();
-//    }
 
     @Override
     public void onResume() {
@@ -287,29 +263,27 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 if (response.isSuccessful()) {
                     int execResult = response.body().getResult();
 
-                    Toast.makeText(getContext().getApplicationContext(), "execResult: " + execResult, Toast.LENGTH_LONG).show();
-
-//                    switch (execResult) {
-//                        case 0:
-//                            Toast.makeText(getContext().getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
-//                            break;
-//                        case -1:
-//                            Log.e(TAG, "Sql query error");
-//                            onDestroy();
-//                            break;
-//                        case -2:
-//                            Log.e(TAG, "Duplicate primary key in polar_data table");
-//                            onDestroy();
-//                            break;
-//                        case -3:
-//                            Toast.makeText(getContext().getApplicationContext(), "Check your mac address", Toast.LENGTH_LONG).show();
-//                            onDestroy();
-//                            break;
-//                        default:
-//                            Log.e(TAG, "Invalid access");
-//                            onDestroy();
-//                            break;
-//                    }
+                   switch (execResult) {
+                       case 0:
+                           Toast.makeText(getContext().getApplicationContext(), "Connect Polar sensor", Toast.LENGTH_LONG).show();
+                           break;
+                       case -1:
+                           Log.e(TAG, "Sql query error");
+                           onDestroy();
+                           break;
+                       case -2:
+                           Log.e(TAG, "Duplicate primary key in polar_data table");
+                           onDestroy();
+                           break;
+                       case -3:
+                           Toast.makeText(getContext().getApplicationContext(), "Check your mac address", Toast.LENGTH_LONG).show();
+                           onDestroy();
+                           break;
+                       default:
+                           Log.e(TAG, "Invalid access");
+                           onDestroy();
+                           break;
+                   }
                 }
             }
 
