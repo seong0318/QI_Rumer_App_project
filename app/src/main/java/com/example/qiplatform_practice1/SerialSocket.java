@@ -50,7 +50,7 @@ class SerialSocket implements Runnable {
 
     void disconnect() {
         listener = null; // ignore remaining data and errors
-        // connected = false; // run loop will reset connected
+         connected = false; // run loop will reset connected
         if(socket != null) {
             try {
                 socket.close();
@@ -91,7 +91,7 @@ class SerialSocket implements Runnable {
         try {
             byte[] buffer = new byte[1024];
             int len;
-            //noinspection InfiniteLoopStatement
+//            noinspection InfiniteLoopStatement
             while (true) {
                 len = socket.getInputStream().read(buffer);
                 byte[] data = Arrays.copyOf(buffer, len);
