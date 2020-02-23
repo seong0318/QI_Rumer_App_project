@@ -162,8 +162,11 @@ public class HomeFragment<latitude, LAT> extends Fragment implements OnMapReadyC
     }
 
     protected void deactivatePolar() {
-        if (mPolarBleUpdateReceiver != null)
+        try {
             getContext().unregisterReceiver(mPolarBleUpdateReceiver);
+        } catch (IllegalArgumentException e) {
+
+        }
     }
 
     private static IntentFilter makePolarGattUpdateIntentFilter() {
